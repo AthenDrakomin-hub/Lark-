@@ -1,0 +1,38 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 敏感配置（严禁提交）
+.env
+.env.*
+*.key
+*.pem
+*.crt
+*.cert
+credentials.json
+config.local.json
+
+# 日志
+*.log
+logs/
+
+# 临时文件
+.tmp-tool-results/
+*.tmp
+*.bak
+
+# 无关文档
+qoder-prompt.xml
+
+# 构建产物（本项目为纯静态HTML，无需构建）
+dist/
+build/
+node_modules/

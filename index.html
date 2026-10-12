@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lark多账号群活跃中控面板</title>
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-second: #6b7280;
+            --border: #e5e7eb;
+            --primary: #2563eb;
+            --warn: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+        .dark {
+            --bg:#111827;
+            --card-bg:#1f2937;
+            --text-main:#f9fafb;
+            --text-second:#d1d5db;
+            --border:#374151;
+        }
+        * {box-sizing: border-box;margin:0;padding:0;font-family: system-ui, sans-serif;}
+        body {background: var(--bg);color:var(--text-main);padding:24px;transition: 0.2s;}
+        .container {max-width:1200px;margin:0 auto;}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap;}
+        h1{font-size:22px;font-weight:600;}
+        .stat-bar{background:var(--card-bg);padding:12px 16px;border-radius:10px;border:1px solid var(--border);margin-bottom:16px;}
+        .btn{padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);cursor:pointer;color:var(--text-main);font-size:14px;}
+        .btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);}
+        .btn-danger{border-color:var(--danger);color:var(--danger);}
+        .tag-filter-wrap{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+        .tag-filter{padding:6px 10px;border-radius:20px;border:1px solid var(--border);cursor:pointer;font-size:14px;}
+        .tag-filter.active{background:var(--primary);color:white;border-color:var(--primary);}
+        .search-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
+        .search-box{flex:1;min-width:240px;padding:14px 16px;border-radius:10px;border:1px solid var(--border);font-size:16px;background:var(--card-bg);color:var(--text-main);}
+        .sort-select{padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);}
+        .batch-bar{background:var(--card-bg);padding:10px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:14px;display:none;flex-wrap:wrap;gap:8px;align-items:center;}
+        .group-list{display:grid;grid-template-columns: repeat(auto-fill, minmax(280px,1fr));gap:14px;}
+        .group-item{background:var(--card-bg);padding:16px;border-radius:10px;border:1px solid var(--border);transition:0.2s;position:relative;}
+        .group-item:hover{border-color:var(--primary);}
+        .group-item.top{box-shadow:0 0 0 2px #2563eb40;}
+        .group-item.invalid{border-left:4px solid var(--danger);}
+        .group-item.wait{border-left:4px solid var(--warn);}
+        .group-name{font-weight:600;font-size:16px;margin-bottom:6px;display:flex;gap:6px;align-items:center;}
+        .tag-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+        .tag{font-size:12px;padding:3px 7px;border-radius:4px;}
+        .desc{font-size:13px;color:var(--text-second);margin-bottom:6px;position:relative;}
+        .desc:hover .desc-full{display:block;}
+        .desc-full{
+            display:none;
+            position:absolute;
+            z-index:10;
+            top:100%;
+            left:0;
+            background:var(--card-bg);
+            border:1px solid var(--border);
+            padding:8px;
+            border-radius:6px;
+            width:300px;
+            white-space:pre-wrap;
+        }
+        .time-line{font-size:12px;color:var(--text-second);margin-bottom:8px;}
+        .item-actions{display:flex;gap:6px;flex-wrap:wrap;}
+        .item-btn{font-size:13px;padding:6px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text-main);}
+        .item-checkbox{position:absolute;top:12px;right:12px;width:18px;height:18px;cursor:pointer;}
+        .empty-tip{text-align:center;padding:40px;color:var(--text-second);}
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z:999;padding:16px;}
+        .modal-box{background:var(--card-bg);padding:20px;border-radius:10px;max-width:600px;width:100%;max-height:90vh;overflow:auto;}
+        .hide{display:none!important;}
+        .modal-lock{overflow:hidden;}
+        .form-row{margin-bottom:12px;}
+        label{display:block;margin-bottom:4px;font-size:14px;}
+        input,textarea,select{width:100%;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-main);}
+        .tag-item-edit{display:flex;gap:6px;align-items:center;margin:6px 0;padding:6px;border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;}
+        .color-preview{width:32px;height:24px;border-radius:4px;border:1px solid #999;}
+        .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
+        .tip-modal .modal-box{max-width:500px;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🔗 Lark多账号群活跃中控面板</h1>
+        <div>
+            <button class="btn btn-primary" id="openConfigBtn">➕ 添加账号群组</button>
+            <button class="btn" id="themeBtn">切换主题</button>
+            <button class="btn" id="exportBtn">导出备份</button>
+            <button class="btn" id="importBtn">导入配置</button>
+            <button class="btn btn-danger" id="resetBtn">重置全部数据</button>
+        </div>
+    </div>
+
+    <div class="stat-bar" id="statBar"></div>
+
+    <div class="batch-bar" id="batchBar">
+        <span>已选中 <span id="batchCount">0</span> 条</span>
+        <button class="btn" id="batchActive">标记选中为已活跃</button>
+        <button class="btn" id="batchTop">批量置顶/取消置顶</button>
+        <button class="btn btn-danger" id="batchDel">批量删除</button>
+        <button class="btn" id="batchCancel">取消选择</button>
+    </div>
+
+    <div class="tag-filter-wrap" id="tagFilterWrap"></div>
+
+    <div class="search-row">
+        <input class="search-box" id="searchInput" placeholder="搜索账号/群名称/备注，快捷键 Ctrl+K">
+        <select class="sort-select" id="sortSelect">
+            <option value="top">置顶优先(默认)</option>
+            <option value="lastActive">最久未活跃优先</option>
+            <option value="name">按名称A-Z</option>
+        </select>
+    </div>
+
+    <div class="group-list" id="listWrap"></div>
+    <div class="empty-tip hide" id="emptyTip">🔍没有匹配的群组，试试更换筛选条件</div>
+</div>
+
+<!-- 首次打开提示弹窗 -->
+<div class="modal tip-modal" id="tipModal">
+    <div class="modal-box">
+        <h3>使用前置说明</h3>
+        <p>1. 本机Lark客户端需要提前登录对应账号，账号必须已经加入目标群。</p>
+        <p>2. 点击卡片【进入群聊】唤起Lark，自动切换账号打开群窗口，手动在Lark内发送消息。</p>
+        <p>3. ❗本面板仅支持 chat/open 会话链接，入群邀请链接无法直接打开群。</p>
+        <label><input type="checkbox" id="neverTip">不再弹出</label>
+        <br><button class="btn" id="closeTip">确认</button>
+    </div>
+</div>
+
+<!-- 编辑/新增群组配置弹窗 -->
+<div class="modal hide" id="configModal">
+    <div class="modal-box">
+        <h3 id="modalTitle">新增账号群组</h3>
+        <input type="hidden" id="editIndex">
+        <div class="form-row">
+            <label>名称（账号编号 | 群名）</label>
+            <input id="inpName" placeholder="账号001 | 闲聊大群A">
+        </div>
+        <div class="form-row">
+            <label>卡片简短描述</label>
+            <input id="inpDescShort" placeholder="早中晚定时活跃">
+        </div>
+        <div class="form-row">
+            <label>悬浮详情备注（活跃时段、注意事项）</label>
+            <textarea id="inpDesc" rows="3" placeholder="活跃时段：9点、14点、20点；不要短时间连续发言"></textarea>
+        </div>
+        <div class="form-row">
+            <label>跳转链接（chat/open 链接）</label>
+            <input id="inpLink" placeholder="https://applink.larksuite.com/client/chat/open?chat_id=oc_xxxxxxx">
+        </div>
+        <div class="form-row">
+            <label>账号状态</label>
+            <select id="inpStatus">
+                <option value="ok">✅正常</option>
+                <option value="wait">⚠️待核验</option>
+                <option value="invalid">❌链接失效</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>是否置顶</label>
+            <select id="inpTop">
+                <option value="false">否</option>
+                <option value="true">是</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label>标签管理</label>
+            <div id="tagEditWrap"></div>
+            <button class="btn" id="addNewTagBtn">+ 添加标签</button>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" id="delItemBtn">删除本条</button>
+            <button class="btn" id="cancelConfig">取消</button>
+            <button class="btn btn-primary" id="saveConfig">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 导入JSON弹窗 -->
+<div class="modal hide" id="importModal">
+    <div class="modal-box">
+        <h3>批量导入配置JSON</h3>
+        <div class="form-row">
+            <label>导入模式</label>
+            <select id="importMode">
+                <option value="append">追加到现有列表（推荐，不会覆盖旧数据）</option>
+                <option value="replace">全部覆盖原有数据（谨慎！）</option>
+            </select>
+        </div>
+        <textarea id="importText" rows="10" placeholder="粘贴完整JSON数组"></textarea>
+        <div class="modal-footer">
+            <button class="btn" id="cancelImport">取消</button>
+            <button class="btn btn-primary" id="doImport">导入</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const defaultData = [
+    {
+        name:"账号001 | 闲聊大群A",
+        descShort:"早中晚定时活跃",
+        desc:"活跃时段：9点、14点、20点；互动：日常闲聊，每次发言间隔随机",
+        tags:[
+            {label:"🔥高活跃", colorBg:"#dcfce7", colorText:"#166534"},
+            {label:"白天场", colorBg:"#dbeafe", colorText:"#1e40af"}
+        ],
+        isTop:true,
+        link:"https://applink.larksuite.com/client/chat/open?chat_id=oc_xxxxxxx",
+        status:"ok",
+        lastActiveTime:""
+    },
+    {
+        name:"账号002 | 闲聊大群A",
+        descShort:"晚间时段活跃",
+        desc:"活跃时段：19点~23点；互动：跟帖回复，不连续刷屏",
+        tags:[
+            {label:"🌙夜场", colorBg:"#f0e7ff", colorText:"#5b21b6"}
+        ],
+        isTop:true,
+        link:"https://applink.larksuite.com/client/chat/open?chat_id=oc_yyyyyyy",
+        status:"ok",
+        lastActiveTime:""
+    }
+];
+
+let groupData = JSON.parse(localStorage.getItem('groupActiveData')) || defaultData;
+let activeTags = new Set();
+let selectedIndexes = new Set();
+
+const searchInput = document.getElementById('searchInput');
+const listWrap = document.getElementById('listWrap');
+const tagFilterWrap = document.getElementById('tagFilterWrap');
+const tipModal = document.getElementById('tipModal');
+const configModal = document.getElementById('configModal');
+const importModal = document.getElementById('importModal');
+const batchBar = document.getElementById('batchBar');
+const batchCount = document.getElementById('batchCount');
+const emptyTip = document.getElementById('emptyTip');
+const statBar = document.getElementById('statBar');
+
+// 兼容旧数据，自动补全缺失字段
+function migrateData(list){
+    return list.map(item=>{
+        return {
+            status: item.status || "ok",
+            lastActiveTime: item.lastActiveTime || "",
+            ...item
+        }
+    })
+}
+groupData = migrateData(groupData);
+
+// 首次弹窗
+if(localStorage.getItem('neverTip') !== '1'){
+    tipModal.classList.remove('hide');
+}
+document.getElementById('closeTip').onclick = ()=>{
+    if(document.getElementById('neverTip').checked) localStorage.setItem('neverTip','1');
+    tipModal.classList.add('hide');
+}
+
+// 主题切换
+document.getElementById('themeBtn').onclick = ()=>{
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+}
+
+// 保存数据到本地存储
+function saveData(){
+    localStorage.setItem('groupActiveData', JSON.stringify(groupData));
+}
+
+// 统计面板
+function renderStat(){
+    const total = groupData.length;
+    const ok = groupData.filter(x=>x.status === 'ok').length;
+    const wait = groupData.filter(x=>x.status === 'wait').length;
+    const invalid = groupData.filter(x=>x.status === 'invalid').length;
+    const today = new Date().toISOString().slice(0,10);
+    const activeToday = groupData.filter(x=>x.lastActiveTime && x.lastActiveTime.startsWith(today)).length;
+    statBar.innerText = `📊 总群组：${total}｜✅正常：${ok}｜⚠️待核验：${wait}｜❌失效：${invalid}｜今日已活跃：${activeToday}`;
+}
+
+// 提取所有标签
+function getAllTags(){
+    const set = new Set();
+    groupData.forEach(g=>g.tags.forEach(t=>set.add(t.label)));
+    return Array.from(set);
+}
+
+// 渲染顶部标签筛选栏
+function renderTagFilter(){
+    const allTags = getAllTags();
+    tagFilterWrap.innerHTML = `<div class="tag-filter ${activeTags.size===0?'active':''}" data-tag="all">全部</div>`;
+    allTags.forEach(tagLabel=>{
+        const div = document.createElement('div');
+        div.className = "tag-filter" + (activeTags.has(tagLabel)?" active":"");
+        div.dataset.tag = tagLabel;
+        div.innerText = tagLabel;
+        div.onclick = ()=>{
+            if(tagLabel === 'all'){
+                activeTags.clear();
+            }else{
+                if(activeTags.has(tagLabel)) activeTags.delete(tagLabel);
+                else activeTags.add(tagLabel);
+            }
+            renderTagFilter();
+            renderList();
+        }
+        tagFilterWrap.appendChild(div);
+    })
+}
+
+// 渲染卡片列表
+function renderList(){
+    selectedIndexes.clear();
+    updateBatchBar();
+    const kw = searchInput.value.trim().toLowerCase();
+    let filterList = groupData.filter(item=>{
+        const textSource = `${item.name} ${item.desc} ${item.tags.map(t=>t.label).join(" ")} ${item.status}`.toLowerCase();
+        const matchSearch = textSource.includes(kw);
+        const matchTag = activeTags.size ===0 || item.tags.some(t=>activeTags.has(t.label));
+        return matchSearch && matchTag;
+    })
+    const sortType = document.getElementById('sortSelect').value;
+    if(sortType === 'top'){
+        filterList.sort((a,b)=> (b.isTop ?1:0) - (a.isTop?1:0));
+    }else if(sortType === 'lastActive'){
+        filterList.sort((a,b)=>{
+            const ta = a.lastActiveTime || "0";
+            const tb = b.lastActiveTime || "0";
+            return ta.localeCompare(tb);
+        })
+    }else if(sortType === 'name'){
+        filterList.sort((a,b)=> a.name.localeCompare(b.name))
+    }
+
+    listWrap.innerHTML = '';
+    if(filterList.length === 0){
+        emptyTip.classList.remove('hide');
+    }else{
+        emptyTip.classList.add('hide');
+    }
+
+    filterList.forEach((item)=>{
+        const realIndex = groupData.indexOf(item);
+        const div = document.createElement('div');
+        let statusClass = '';
+        let statusIcon = '';
+        if(item.status === 'invalid') {statusClass = 'invalid'; statusIcon='❌';}
+        if(item.status === 'wait') {statusClass = 'wait'; statusIcon='⚠️';}
+        div.className = `group-item ${item.isTop ? " top":""} ${statusClass}`;
+
+        let timeText = "上次活跃：无记录";
+        if(item.lastActiveTime){
+            const d = new Date(item.lastActiveTime);
+            timeText = `上次活跃：${d.toLocaleString()}`;
+        }
+
+        let tagHtml = '';
+        item.tags.forEach(t=>{
+            tagHtml += `<span class="tag" style="background:${t.colorBg};color:${t.colorText}">${t.label}</span>`
+        })
+        div.innerHTML = `
+            <input type="checkbox" class="item-checkbox" data-idx="${realIndex}">
+            <div class="group-name">${statusIcon} ${item.name}</div>
+            <div class="tag-wrap">${tagHtml}</div>
+            <div class="desc">
+                ${item.descShort}
+                <span class="desc-full">${item.desc}</span>
+            </div>
+            <div class="time-line">${timeText}</div>
+            <div class="item-actions">
+                <button class="item-btn jumpBtn">进入群聊</button>
+                <button class="item-btn copyBtn">复制链接</button>
+                <button class="item-btn markActiveBtn">标记活跃</button>
+                <button class="item-btn editBtn">编辑</button>
+            </div>
+        `;
+        div.querySelector('.jumpBtn').onclick = (e)=>{
+            e.stopPropagation();
+            window.open(item.link);
+        }
+        div.querySelector('.copyBtn').onclick = async (e)=>{
+            e.stopPropagation();
+            await navigator.clipboard.writeText(item.link);
+            alert("链接已复制");
+        }
+        div.querySelector('.markActiveBtn').onclick = (e)=>{
+            e.stopPropagation();
+            groupData[realIndex].lastActiveTime = new Date().toISOString();
+            saveData();
+            renderStat();
+            renderList();
+        }
+        div.querySelector('.editBtn').onclick = (e)=>{
+            e.stopPropagation();
+            openEditModal(realIndex);
+        }
+        const ck = div.querySelector('.item-checkbox');
+        ck.onchange = ()=>{
+            if(ck.checked) selectedIndexes.add(realIndex);
+            else selectedIndexes.delete(realIndex);
+            updateBatchBar();
+        }
+        listWrap.appendChild(div);
+    })
+}
+
+function updateBatchBar(){
+    batchCount.innerText = selectedIndexes.size;
+    if(selectedIndexes.size > 0){
+        batchBar.style.display = "flex";
+    }else{
+        batchBar.style.display = "none";
+    }
+}
+
+// 批量操作
+document.getElementById('batchActive').onclick = ()=>{
+    const now = new Date().toISOString();
+    selectedIndexes.forEach(idx=>{
+        groupData[idx].lastActiveTime = now;
+    })
+    saveData();
+    renderStat();
+    renderList();
+}
+document.getElementById('batchTop').onclick = ()=>{
+    selectedIndexes.forEach(idx=>{
+        groupData[idx].isTop = !groupData[idx].isTop;
+    })
+    saveData();
+    renderStat();
+    renderList();
+}
+document.getElementById('batchDel').onclick = ()=>{
+    if(!confirm(`确定删除选中${selectedIndexes.size}条数据？不可恢复！`)) return;
+    const arr = Array.from(selectedIndexes).sort((a,b)=>b-a);
+    arr.forEach(i=> groupData.splice(i,1));
+    saveData();
+    renderStat();
+    renderTagFilter();
+    renderList();
+}
+document.getElementById('batchCancel').onclick = ()=>{
+    selectedIndexes.clear();
+    renderList();
+}
+
+// 打开新增/编辑弹窗
+function openEditModal(index=null){
+    document.getElementById('tagEditWrap').innerHTML = '';
+    if(index === null){
+        document.getElementById('modalTitle').innerText = "新增账号群组";
+        document.getElementById('editIndex').value = "";
+        document.getElementById('inpName').value = "";
+        document.getElementById('inpDescShort').value = "";
+        document.getElementById('inpDesc').value = "";
+        document.getElementById('inpLink').value = "";
+        document.getElementById('inpTop').value = "false";
+        document.getElementById('inpStatus').value = "ok";
+    }else{
+        document.getElementById('modalTitle').innerText = "编辑账号群组";
+        document.getElementById('editIndex').value = index;
+        const item = groupData[index];
+        document.getElementById('inpName').value = item.name;
+        document.getElementById('inpDescShort').value = item.descShort;
+        document.getElementById('inpDesc').value = item.desc;
+        document.getElementById('inpLink').value = item.link;
+        document.getElementById('inpTop').value = String(item.isTop);
+        document.getElementById('inpStatus').value = item.status;
+        item.tags.forEach(t=> addTagEditRow(t.label, t.colorBg, t.colorText));
+    }
+    configModal.classList.remove('hide');
+    document.body.classList.add('modal-lock');
+}
+
+// 添加标签编辑行
+function addTagEditRow(label="", bg="#dcfce7", text="#166534"){
+    const wrap = document.getElementById('tagEditWrap');
+    const row = document.createElement('div');
+    row.className = "tag-item-edit";
+    row.innerHTML = `
+        <input placeholder="标签文字" class="tag-label" value="${label}">
+        <input type="color" class="tag-bg" value="${bg}">
+        <div class="color-preview" style="background:${bg};color:${text}">A</div>
+        <input type="color" class="tag-text" value="${text}">
+        <button class="btn del-tag">×</button>
+    `;
+    const preview = row.querySelector('.color-preview');
+    const bgInput = row.querySelector('.tag-bg');
+    const textInput = row.querySelector('.tag-text');
+    bgInput.oninput = ()=> preview.style.background = bgInput.value;
+    textInput.oninput = ()=> preview.style.color = textInput.value;
+    row.querySelector('.del-tag').onclick = ()=> row.remove();
+    wrap.appendChild(row);
+}
+
+document.getElementById('addNewTagBtn').onclick = ()=> addTagEditRow();
+
+// 保存配置
+document.getElementById('saveConfig').onclick = ()=>{
+    const idxVal = document.getElementById('editIndex').value;
+    const tags = [];
+    document.querySelectorAll('.tag-item-edit').forEach(el=>{
+        const label = el.querySelector('.tag-label').value.trim();
+        const cBg = el.querySelector('.tag-bg').value;
+        const cText = el.querySelector('.tag-text').value;
+        if(label) tags.push({label, colorBg:cBg, colorText:cText});
+    })
+    const payload = {
+        name: document.getElementById('inpName').value.trim(),
+        descShort: document.getElementById('inpDescShort').value.trim(),
+        desc: document.getElementById('inpDesc').value.trim(),
+        link: document.getElementById('inpLink').value.trim(),
+        isTop: document.getElementById('inpTop').value === "true",
+        status: document.getElementById('inpStatus').value,
+        lastActiveTime: idxVal ? groupData[Number(idxVal)].lastActiveTime : "",
+        tags
+    }
+    if(!payload.name || !payload.link){
+        alert("名称和跳转链接不能为空");
+        return;
+    }
+    if(idxVal === ""){
+        groupData.push(payload);
+    }else{
+        groupData[Number(idxVal)] = payload;
+    }
+    saveData();
+    configModal.classList.add('hide');
+    document.body.classList.remove('modal-lock');
+    renderStat();
+    renderTagFilter();
+    renderList();
+}
+
+// 删除本条
+document.getElementById('delItemBtn').onclick = ()=>{
+    const idxVal = document.getElementById('editIndex').value;
+    if(idxVal === ""){
+        configModal.classList.add('hide');
+        document.body.classList.remove('modal-lock');
+        return;
+    }
+    if(!confirm("确认删除这条账号群组配置？")) return;
+    groupData.splice(Number(idxVal), 1);
+    saveData();
+    configModal.classList.add('hide');
+    document.body.classList.remove('modal-lock');
+    renderStat();
+    renderTagFilter();
+    renderList();
+}
+
+document.getElementById('cancelConfig').onclick = ()=> {
+    configModal.classList.add('hide');
+    document.body.classList.remove('modal-lock');
+};
+document.getElementById('openConfigBtn').onclick = ()=> openEditModal(null);
+// 点击蒙层关闭弹窗
+configModal.addEventListener('click',(e)=>{
+    if(e.target === configModal){
+        configModal.classList.add('hide');
+        document.body.classList.remove('modal-lock');
+    }
+})
+
+// 导出备份
+document.getElementById('exportBtn').onclick = ()=>{
+    const json = JSON.stringify(groupData,null,2);
+    const now = new Date().toISOString().slice(0,16).replace(/[:T]/g,"");
+    const blob = new Blob([json],{type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `群活跃配置备份_${now}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// 导入
+document.getElementById('importBtn').onclick = ()=>{
+    document.getElementById('importText').value = "";
+    importModal.classList.remove('hide');
+    document.body.classList.add('modal-lock');
+}
+document.getElementById('cancelImport').onclick = ()=> {
+    importModal.classList.add('hide');
+    document.body.classList.remove('modal-lock');
+};
+importModal.addEventListener('click',(e)=>{
+    if(e.target === importModal){
+        importModal.classList.add('hide');
+        document.body.classList.remove('modal-lock');
+    }
+})
+document.getElementById('doImport').onclick = ()=>{
+    try{
+        const arr = JSON.parse(document.getElementById('importText').value);
+        if(!Array.isArray(arr)) throw Error("不是数组");
+        const migrated = migrateData(arr);
+        const mode = document.getElementById('importMode').value;
+        if(mode === 'append'){
+            groupData = [...groupData, ...migrated];
+        }else{
+            groupData = migrated;
+        }
+        saveData();
+        importModal.classList.add('hide');
+        document.body.classList.remove('modal-lock');
+        renderStat();
+        renderTagFilter();
+        renderList();
+        alert("导入成功");
+    }catch(e){
+        alert("JSON解析失败，检查格式");
+    }
+}
+
+// 重置全部数据
+document.getElementById('resetBtn').onclick = ()=>{
+    if(!confirm("⚠️ 危险操作！确认清空全部群组数据？删除后无法恢复！建议先导出备份！")) return;
+    if(!confirm("再次确认，彻底清空全部数据？")) return;
+    localStorage.removeItem('groupActiveData');
+    groupData = migrateData(defaultData);
+    saveData();
+    renderStat();
+    renderTagFilter();
+    renderList();
+}
+
+// 排序切换
+document.getElementById('sortSelect').onchange = renderList;
+
+// 搜索监听
+searchInput.addEventListener('input', renderList);
+
+// 快捷键
+document.addEventListener('keydown',(e)=>{
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+        e.preventDefault();
+        searchInput.focus();
+    }
+    if(e.key === 'Escape'){
+        searchInput.value = '';
+        renderList();
+        searchInput.blur();
+        // 关闭弹窗
+        configModal.classList.add('hide');
+        importModal.classList.add('hide');
+        tipModal.classList.add('hide');
+        document.body.classList.remove('modal-lock');
+    }
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){
+        e.preventDefault();
+        openEditModal(null);
+    }
+})
+
+// 初始化
+renderStat();
+renderTagFilter();
+renderList();
+</script>
+</body>
+</html>
