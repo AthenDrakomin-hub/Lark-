@@ -1070,6 +1070,292 @@
             .header-actions .btn-label { display: none; }
             .header-actions .btn { width: 38px; padding: 0; }
         }
+
+        /* ============================================================
+           REMINDER BANNER (活跃提醒横幅)
+           ============================================================ */
+        .reminder-banner {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            background: linear-gradient(135deg, var(--danger-50), #fff);
+            border: 1px solid var(--danger-500);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-4);
+            animation: slideDown var(--transition-base) ease;
+        }
+        .dark .reminder-banner { background: linear-gradient(135deg, rgba(239,68,68,0.15), var(--card-bg)); }
+        .reminder-banner .reminder-icon {
+            width: 40px; height: 40px;
+            background: var(--danger-500);
+            color: #fff;
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        .reminder-banner .reminder-icon .icon { width: 20px; height: 20px; }
+        .reminder-info { flex: 1; min-width: 0; }
+        .reminder-title { font-weight: 600; font-size: var(--text-sm); color: var(--danger-700); }
+        .dark .reminder-title { color: var(--danger-400); }
+        .reminder-desc { font-size: var(--text-xs); color: var(--text-second); margin-top: 2px; }
+        .reminder-actions { display: flex; gap: var(--space-2); flex-shrink: 0; }
+
+        /* 超期标记 */
+        .overdue-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: var(--danger-50);
+            color: var(--danger-600);
+            margin-left: auto;
+        }
+        .dark .overdue-badge { background: rgba(239,68,68,0.15); color: var(--danger-400); }
+        .group-item.overdue { border-color: var(--danger-500); }
+        .group-item.overdue .status-bar { background: var(--danger-500); }
+
+        /* ============================================================
+           FOCUS MODE (批量活跃专注模式)
+           ============================================================ */
+        .focus-mode {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            padding: var(--space-8);
+            overflow-y: auto;
+        }
+        .focus-mode.active { display: flex; }
+        .focus-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-6);
+        }
+        .focus-title { font-size: var(--text-2xl); font-weight: 700; display: flex; align-items: center; gap: var(--space-3); }
+        .focus-progress-wrap { flex: 1; max-width: 400px; margin: 0 var(--space-6); }
+        .focus-progress-bar {
+            height: 8px;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        .focus-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-500), var(--success-500));
+            border-radius: var(--radius-full);
+            transition: width var(--transition-base);
+        }
+        .focus-progress-text { font-size: var(--text-xs); color: var(--text-second); margin-top: 4px; text-align: center; }
+        .focus-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+        }
+        .focus-account-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+        }
+        .focus-group-name { font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-3); }
+        .focus-group-desc { font-size: var(--text-base); color: var(--text-second); margin-bottom: var(--space-6); line-height: 1.6; }
+        .focus-lark-hint {
+            background: var(--warn-50);
+            border: 1px solid var(--warn-500);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            margin-bottom: var(--space-6);
+            font-size: var(--text-sm);
+            color: var(--warn-700);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            justify-content: center;
+        }
+        .dark .focus-lark-hint { color: var(--warn-400); }
+        .focus-actions { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+        .focus-btn-jump {
+            height: 56px;
+            padding: 0 var(--space-8);
+            font-size: var(--text-lg);
+            font-weight: 600;
+        }
+        .focus-btn-skip { height: 56px; padding: 0 var(--space-6); }
+        .focus-nav { display: flex; gap: var(--space-2); justify-content: center; margin-top: var(--space-4); }
+        .focus-empty {
+            text-align: center;
+            padding: var(--space-10);
+        }
+        .focus-empty .icon { width: 64px; height: 64px; color: var(--success-500); margin-bottom: var(--space-4); }
+        .focus-empty h3 { font-size: var(--text-xl); margin-bottom: var(--space-2); }
+        .focus-empty p { color: var(--text-second); margin-bottom: var(--space-6); }
+
+        /* ============================================================
+           HEATMAP (活跃热力图)
+           ============================================================ */
+        .heatmap-wrap {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-5);
+        }
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+        }
+        .heatmap-title { font-weight: 600; font-size: var(--text-sm); display: flex; align-items: center; gap: 6px; }
+        .heatmap-legend { display: flex; align-items: center; gap: 4px; font-size: var(--text-xs); color: var(--text-muted); }
+        .heatmap-legend .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(53, 1fr);
+            gap: 3px;
+        }
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 3px;
+            background: var(--bg-subtle);
+            transition: transform var(--transition-fast);
+            cursor: pointer;
+        }
+        .heatmap-cell:hover { transform: scale(1.3); }
+        .heatmap-cell.level-1 { background: rgba(16,185,129,0.25); }
+        .heatmap-cell.level-2 { background: rgba(16,185,129,0.5); }
+        .heatmap-cell.level-3 { background: rgba(16,185,129,0.75); }
+        .heatmap-cell.level-4 { background: var(--success-500); }
+        .heatmap-cell.today { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+        /* 账号排行 */
+        .ranking-wrap {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-5);
+        }
+        .ranking-title { font-weight: 600; font-size: var(--text-sm); margin-bottom: var(--space-4); display: flex; align-items: center; gap: 6px; }
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .ranking-item:last-child { border-bottom: none; }
+        .ranking-num {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: var(--bg-subtle);
+            display: flex; align-items: center; justify-content: center;
+            font-size: var(--text-xs); font-weight: 700;
+            flex-shrink: 0;
+        }
+        .ranking-num.top1 { background: #fbbf24; color: #fff; }
+        .ranking-num.top2 { background: #9ca3af; color: #fff; }
+        .ranking-num.top3 { background: #d97706; color: #fff; }
+        .ranking-name { flex: 1; font-size: var(--text-sm); font-weight: 500; }
+        .ranking-bar-wrap { width: 120px; height: 8px; background: var(--bg-subtle); border-radius: var(--radius-full); overflow: hidden; }
+        .ranking-bar { height: 100%; background: var(--primary); border-radius: var(--radius-full); transition: width var(--transition-base); }
+        .ranking-count { font-size: var(--text-xs); color: var(--text-muted); width: 50px; text-align: right; }
+
+        /* ============================================================
+           ACCOUNT GROUP (账号分组)
+           ============================================================ */
+        .account-group-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .account-group-header .icon { width: 14px; height: 14px; transition: transform var(--transition-fast); }
+        .account-group-header.collapsed .icon { transform: rotate(-90deg); }
+        .account-group-chips { display: flex; gap: var(--space-2); flex-wrap: wrap; padding-left: var(--space-4); }
+        .account-group-chips.collapsed { display: none; }
+
+        /* ============================================================
+           DROP OVERLAY (拖拽导入)
+           ============================================================ */
+        .drop-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(99,102,241,0.9);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: var(--space-4);
+            color: #fff;
+        }
+        .drop-overlay.active { display: flex; }
+        .drop-overlay .icon { width: 80px; height: 80px; }
+        .drop-overlay h2 { font-size: var(--text-2xl); font-weight: 700; }
+        .drop-overlay p { font-size: var(--text-base); opacity: 0.9; }
+
+        /* ============================================================
+           VERSION LIST (版本快照)
+           ============================================================ */
+        .version-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            background: var(--bg-subtle);
+        }
+        .version-info { flex: 1; min-width: 0; }
+        .version-time { font-size: var(--text-sm); font-weight: 500; }
+        .version-meta { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+        .version-actions { display: flex; gap: var(--space-1); }
+
+        /* 统计面板超期卡片 */
+        .stat-card.overdue::before { background: var(--danger-500); }
+        .stat-card.overdue .stat-icon { background: var(--danger-50); color: var(--danger-600); }
+        .dark .stat-card.overdue .stat-icon { background: rgba(239,68,68,0.15); color: var(--danger-400); }
+
+        /* 活跃模式入口按钮特殊样式 */
+        .btn-focus {
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+        }
+        .btn-focus:hover { background: linear-gradient(135deg, var(--primary-600), var(--primary-800)); }
+        .dark .btn-focus { color: #fff; }
     </style>
 </head>
 <body>
@@ -1084,6 +1370,10 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn btn-focus" id="focusModeBtn" title="批量活跃模式">
+                <i data-lucide="zap" class="icon"></i>
+                <span class="btn-label">活跃模式</span>
+            </button>
             <button class="btn" id="accountMgrBtn" title="账号管理">
                 <i data-lucide="users" class="icon"></i>
                 <span class="btn-label">账号管理</span>
@@ -1109,6 +1399,23 @@
 
     <!-- STAT CARDS -->
     <div class="stat-grid" id="statGrid"></div>
+
+    <!-- REMINDER BANNER -->
+    <div class="reminder-banner hide" id="reminderBanner">
+        <div class="reminder-icon"><i data-lucide="alert-triangle"></i></div>
+        <div class="reminder-info">
+            <div class="reminder-title" id="reminderTitle">有群组超期未活跃</div>
+            <div class="reminder-desc" id="reminderDesc">点击查看待活跃群组</div>
+        </div>
+        <div class="reminder-actions">
+            <button class="btn btn-sm btn-primary" id="reminderViewBtn">
+                <i data-lucide="eye" class="icon"></i>查看
+            </button>
+            <button class="btn btn-sm btn-ghost" id="reminderStartBtn">
+                <i data-lucide="zap" class="icon"></i>开始活跃
+            </button>
+        </div>
+    </div>
 
     <!-- BATCH BAR -->
     <div class="batch-bar" id="batchBar">
@@ -1153,6 +1460,29 @@
             <option value="lastActive">最久未活跃</option>
             <option value="name">名称 A-Z</option>
         </select>
+    </div>
+
+    <!-- HEATMAP & RANKING -->
+    <div id="analyticsWrap" style="display:none;">
+        <div class="heatmap-wrap">
+            <div class="heatmap-header">
+                <div class="heatmap-title"><i data-lucide="calendar" class="icon"></i>活跃日历（最近12周）</div>
+                <div class="heatmap-legend">
+                    <span>少</span>
+                    <span class="legend-box" style="background:var(--bg-subtle);"></span>
+                    <span class="legend-box level-1"></span>
+                    <span class="legend-box level-2"></span>
+                    <span class="legend-box level-3"></span>
+                    <span class="legend-box level-4" style="background:var(--success-500);"></span>
+                    <span>多</span>
+                </div>
+            </div>
+            <div class="heatmap-grid" id="heatmapGrid"></div>
+        </div>
+        <div class="ranking-wrap">
+            <div class="ranking-title"><i data-lucide="bar-chart-3" class="icon"></i>账号活跃度排行（近7天）</div>
+            <div id="rankingList"></div>
+        </div>
     </div>
 
     <!-- GROUP LIST -->
@@ -1296,6 +1626,17 @@
                 <input class="form-input" id="newAccountLark" placeholder="例如：138xxxx 或 name@company.com，跳转时提示切换到此账号">
                 <div class="form-hint">填写后，点击「进入群聊」时会提示确认当前 Lark 客户端已登录此账号</div>
             </div>
+            <div class="form-row inline">
+                <div>
+                    <label class="form-label">所属分组</label>
+                    <input class="form-input" id="newAccountGroup" placeholder="例如：运营号、客服号" value="默认分组">
+                </div>
+                <div>
+                    <label class="form-label">活跃周期（天）</label>
+                    <input class="form-input" id="newAccountInterval" type="number" min="1" max="30" value="2">
+                    <div class="form-hint">超过此天数未活跃将提醒</div>
+                </div>
+            </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2);">
                 <label class="form-label" style="margin-bottom:0;">已有账号（<span id="accountTotal">0</span>）</label>
             </div>
@@ -1324,7 +1665,12 @@
             </div>
             <div class="form-row">
                 <label class="form-label">JSON 数据</label>
-                <textarea class="form-textarea" id="importText" rows="10" placeholder='粘贴完整 JSON 数组，例如：[{"name":"...","link":"..."}]'></textarea>
+                <textarea class="form-textarea" id="importText" rows="6" placeholder='粘贴完整 JSON，或直接将 .json 文件拖入页面'></textarea>
+                <div class="form-hint">也可以直接将备份文件拖拽到页面任意位置</div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">历史版本（自动保存最近5次）</label>
+                <div id="versionList"></div>
             </div>
         </div>
         <div class="modal-footer">
@@ -1462,7 +1808,21 @@
             <div class="form-row">
                 <label class="form-label">数据安全</label>
                 <div class="onboarding-desc">
-                    所有配置保存在浏览器 localStorage 中，不会上传到任何服务器。建议定期使用「导出备份」功能保存 JSON 文件。
+                    所有配置保存在浏览器 localStorage 中，不会上传到任何服务器。建议定期使用「导出备份」功能保存 JSON 文件。<br>
+                    <strong>自动版本快照：</strong>每次修改后自动保存最近5个版本，可在导入弹窗中回滚。<br>
+                    <strong>拖拽导入：</strong>直接将 JSON 备份文件拖入页面即可导入。
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">活跃提醒</label>
+                <div class="onboarding-desc">
+                    系统自动检测超期未活跃的群组（按账号设置的活跃周期），顶部显示提醒横幅，并发送桌面通知。点击「超期未活跃」统计卡片可直接进入活跃模式。
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">活跃模式</label>
+                <div class="onboarding-desc">
+                    点击顶部「活跃模式」按钮，进入专注批量活跃。系统按最久未活跃排序，依次展示群组，跳转后自动标记活跃并切换下一个，进度实时显示。
                 </div>
             </div>
             <div class="form-row" style="text-align:center; padding-top:8px;">
@@ -1477,13 +1837,33 @@
     </div>
 </div>
 
+<!-- FOCUS MODE (批量活跃专注模式) -->
+<div class="focus-mode" id="focusMode">
+    <div class="focus-header">
+        <div class="focus-title"><i data-lucide="zap"></i>活跃模式</div>
+        <div class="focus-progress-wrap">
+            <div class="focus-progress-bar"><div class="focus-progress-fill" id="focusProgressFill" style="width:0%"></div></div>
+            <div class="focus-progress-text" id="focusProgressText">0 / 0</div>
+        </div>
+        <button class="btn btn-ghost" id="focusExitBtn"><i data-lucide="x"></i>退出</button>
+    </div>
+    <div id="focusContent"></div>
+</div>
+
+<!-- DROP OVERLAY (拖拽导入) -->
+<div class="drop-overlay" id="dropOverlay">
+    <i data-lucide="upload-cloud"></i>
+    <h2>松开鼠标导入配置</h2>
+    <p>支持 JSON 备份文件</p>
+</div>
+
 <script>
 /* ============================================================
    DATA LAYER
    ============================================================ */
 const defaultAccounts = [
-    { id: "acc_001", name: "账号001", note: "示例账号", larkAccount: "", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" },
-    { id: "acc_002", name: "账号002", note: "示例账号", larkAccount: "", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" }
+    { id: "acc_001", name: "账号001", note: "示例账号", larkAccount: "", group: "默认分组", activeInterval: 2, status: "ok", createdAt: "2026-01-01T00:00:00.000Z" },
+    { id: "acc_002", name: "账号002", note: "示例账号", larkAccount: "", group: "默认分组", activeInterval: 2, status: "ok", createdAt: "2026-01-01T00:00:00.000Z" }
 ];
 
 const defaultData = [
@@ -1499,7 +1879,8 @@ const defaultData = [
         isTop:true,
         link:"https://applink.larksuite.com/client/chat/open?chat_id=oc_xxxxxxx",
         status:"ok",
-        lastActiveTime:""
+        lastActiveTime:"",
+        activeHistory:[]
     },
     {
         accountId: "acc_002",
@@ -1512,7 +1893,8 @@ const defaultData = [
         isTop:true,
         link:"https://applink.larksuite.com/client/chat/open?chat_id=oc_yyyyyyy",
         status:"ok",
-        lastActiveTime:""
+        lastActiveTime:"",
+        activeHistory:[]
     }
 ];
 
@@ -1556,11 +1938,28 @@ function migrateData(list){
             tags: Array.isArray(item.tags) ? item.tags : [],
             isTop: !!item.isTop,
             accountId,
+            activeHistory: Array.isArray(item.activeHistory) ? item.activeHistory : [],
             ...item,
-            accountId
+            accountId,
+            activeHistory: Array.isArray(item.activeHistory) ? item.activeHistory : []
         };
     });
 }
+// 账号数据迁移：补全新字段
+function migrateAccounts(list){
+    return list.map(acc => ({
+        group: acc.group || "默认分组",
+        activeInterval: acc.activeInterval || 2,
+        larkAccount: acc.larkAccount || "",
+        note: acc.note || "",
+        status: acc.status || "ok",
+        createdAt: acc.createdAt || new Date().toISOString(),
+        ...acc,
+        group: acc.group || "默认分组",
+        activeInterval: acc.activeInterval || 2
+    }));
+}
+accounts = migrateAccounts(accounts);
 function saveAccounts(){
     try { localStorage.setItem('larkAccounts', JSON.stringify(accounts)); }
     catch(e){ showToast('账号数据保存失败', 'error'); }
@@ -1622,9 +2021,16 @@ $('confirmOk').onclick = () => { if (confirmCallback) confirmCallback(); closeCo
 /* ============================================================
    PERSIST
    ============================================================ */
+let lastVersionSave = 0;
 function saveData(){
     try {
         localStorage.setItem('groupActiveData', JSON.stringify(groupData));
+        // 版本快照：节流30秒，避免频繁保存
+        const now = Date.now();
+        if (now - lastVersionSave > 30000) {
+            lastVersionSave = now;
+            saveVersion();
+        }
     } catch(e) {
         showToast('本地存储已满，请导出备份后清理部分数据', 'error');
     }
@@ -1648,10 +2054,15 @@ function timeAgo(isoString) {
     if (diffDay < 7) return `${diffDay} 天前`;
     return then.toLocaleDateString('zh-CN');
 }
-function isOverdue(isoString) {
+function isOverdue(isoString, accountId = null) {
     if (!isoString) return true;
+    let intervalDays = 2;
+    if (accountId) {
+        const acc = accounts.find(a => a.id === accountId);
+        if (acc) intervalDays = acc.activeInterval || 2;
+    }
     const diffDays = (Date.now() - new Date(isoString).getTime()) / 86400000;
-    return diffDays > 2;
+    return diffDays >= intervalDays;
 }
 
 /* ============================================================
@@ -1665,6 +2076,7 @@ function renderStat(){
     const today = new Date().toISOString().slice(0,10);
     const activeToday = groupData.filter(x => x.lastActiveTime && x.lastActiveTime.startsWith(today)).length;
     const accountCount = new Set(groupData.filter(g => g.accountId).map(g => g.accountId)).size;
+    const overdueCount = getOverdueGroups().length;
 
     const cards = [
         { key: 'accounts', label: '管控账号', num: accountCount, icon: 'users', filter: '_accounts' },
@@ -1673,10 +2085,11 @@ function renderStat(){
         { key: 'wait',    label: '待核验',   num: wait,    icon: 'clock',         filter: 'wait' },
         { key: 'invalid', label: '链接失效', num: invalid, icon: 'x-circle',      filter: 'invalid' },
         { key: 'today',   label: '今日活跃', num: activeToday, icon: 'zap',       filter: 'today' },
+        { key: 'overdue', label: '超期未活跃', num: overdueCount, icon: 'alert-triangle', filter: '_overdue', extraClass: 'overdue' },
     ];
 
     statGrid.innerHTML = cards.map(c => `
-        <div class="stat-card ${c.key} ${activeStatusFilter === c.filter ? 'active' : ''}" data-filter="${c.filter}">
+        <div class="stat-card ${c.key} ${c.extraClass || ''} ${activeStatusFilter === c.filter ? 'active' : ''}" data-filter="${c.filter}">
             <div class="stat-top">
                 <div class="stat-icon"><i data-lucide="${c.icon}"></i></div>
                 <div class="stat-num">${c.num}</div>
@@ -1691,8 +2104,11 @@ function renderStat(){
         card.onclick = () => {
             const f = card.dataset.filter;
             if (f === '_accounts') {
-                // 点击管控账号卡片打开账号管理
                 openAccountModal();
+                return;
+            }
+            if (f === '_overdue') {
+                enterFocusMode('overdue');
                 return;
             }
             activeStatusFilter = (activeStatusFilter === (f === 'null' ? null : f)) ? null : (f === 'null' ? null : f);
@@ -1700,49 +2116,6 @@ function renderStat(){
             renderList();
         };
     });
-}
-
-/* ============================================================
-   ACCOUNT FILTER (多账号筛选)
-   ============================================================ */
-function renderAccountFilter(){
-    const wrap = $('accountFilterWrap');
-    const unassignedCount = groupData.filter(g => !g.accountId).length;
-    let html = `
-        <span class="account-filter-label"><i data-lucide="users"></i>按账号筛选</span>
-        <div class="account-chip ${activeAccountId === null ? 'active' : ''}" data-acc="">
-            <i data-lucide="layout-grid"></i>全部账号<span class="account-chip-count">${groupData.length}</span>
-        </div>
-    `;
-    accounts.forEach(acc => {
-        const count = getAccountGroupsCount(acc.id);
-        html += `
-            <div class="account-chip ${activeAccountId === acc.id ? 'active' : ''}" data-acc="${acc.id}">
-                <i data-lucide="user"></i>${escapeHtml(acc.name)}<span class="account-chip-count">${count}</span>
-            </div>
-        `;
-    });
-    if (unassignedCount > 0) {
-        html += `
-            <div class="account-chip ${activeAccountId === '_unassigned' ? 'active' : ''}" data-acc="_unassigned">
-                <i data-lucide="help-circle"></i>未分配<span class="account-chip-count">${unassignedCount}</span>
-            </div>
-        `;
-    }
-    html += `<button class="account-manage-btn" id="openAccountMgrBtn"><i data-lucide="settings-2"></i>管理账号</button>`;
-    wrap.innerHTML = html;
-    if (window.lucide) lucide.createIcons({ nodes: [wrap] });
-
-    wrap.querySelectorAll('.account-chip').forEach(chip => {
-        chip.onclick = () => {
-            const accId = chip.dataset.acc;
-            activeAccountId = accId === '' ? null : accId;
-            renderAccountFilter();
-            renderList();
-        };
-    });
-    const mgrBtn = $('openAccountMgrBtn');
-    if (mgrBtn) mgrBtn.onclick = openAccountModal;
 }
 
 /* ============================================================
@@ -1844,18 +2217,21 @@ function renderList(){
 
     filterList.forEach((item, idx) => {
         const realIndex = groupData.indexOf(item);
+        const overdue = isOverdue(item.lastActiveTime, item.accountId);
         const div = document.createElement('div');
-        div.className = `group-item ${item.isTop ? ' top' : ''}`;
+        div.className = `group-item ${item.isTop ? ' top' : ''} ${overdue && item.status === 'ok' ? ' overdue' : ''}`;
         div.style.animationDelay = `${Math.min(idx * 40, 400)}ms`;
 
         const statusIcons = { ok: 'check-circle', wait: 'clock', invalid: 'x-circle' };
         const statusLabels = { ok: '正常', wait: '待核验', invalid: '已失效' };
-        const overdue = isOverdue(item.lastActiveTime);
 
         let tagHtml = '';
         item.tags.forEach(t => {
             tagHtml += `<span class="tag" style="background:${t.colorBg};color:${t.colorText}">${t.label}</span>`;
         });
+        if (overdue && item.status === 'ok') {
+            tagHtml += `<span class="overdue-badge"><i data-lucide="alert-circle"></i>超期</span>`;
+        }
 
         const hasDesc = item.desc && item.desc.trim();
 
@@ -1925,7 +2301,13 @@ function renderList(){
                         showToast('链接已复制到剪贴板', 'success');
                     }).catch(() => showToast('复制失败，请手动复制', 'error'));
                 } else if (action === 'mark') {
-                    groupData[realIndex].lastActiveTime = new Date().toISOString();
+                    const now = new Date().toISOString();
+                    groupData[realIndex].lastActiveTime = now;
+                    if (!groupData[realIndex].activeHistory) groupData[realIndex].activeHistory = [];
+                    groupData[realIndex].activeHistory.push(now);
+                    // 只保留最近90天记录
+                    const cutoff = Date.now() - 90 * 86400000;
+                    groupData[realIndex].activeHistory = groupData[realIndex].activeHistory.filter(t => new Date(t).getTime() > cutoff);
                     saveData();
                     renderStat();
                     renderList();
@@ -1968,7 +2350,11 @@ function updateBatchBar(){
 
 $('batchActive').onclick = () => {
     const now = new Date().toISOString();
-    selectedIndexes.forEach(idx => { groupData[idx].lastActiveTime = now; });
+    selectedIndexes.forEach(idx => {
+        groupData[idx].lastActiveTime = now;
+        if (!groupData[idx].activeHistory) groupData[idx].activeHistory = [];
+        groupData[idx].activeHistory.push(now);
+    });
     saveData(); renderStat(); renderList();
     showToast(`已标记 ${selectedIndexes.size} 条为活跃`, 'success');
 };
@@ -2260,11 +2646,13 @@ function renderAccountList(){
                     <div class="account-row-meta">
                         <span><i data-lucide="layers" style="width:11px;height:11px;vertical-align:-1px;"></i> ${groupCount} 个群组</span>
                         ${acc.larkAccount ? `<span><i data-lucide="smartphone" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.larkAccount)}</span>` : ''}
+                        ${acc.group && acc.group !== '默认分组' ? `<span><i data-lucide="folder" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.group)}</span>` : ''}
+                        <span><i data-lucide="timer" style="width:11px;height:11px;vertical-align:-1px;"></i> ${acc.activeInterval || 2}天</span>
                         ${acc.note ? `<span><i data-lucide="file-text" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.note)}</span>` : ''}
                     </div>
                 </div>
                 <div class="account-row-actions">
-                    <button class="item-btn" data-acc-action="edit" title="重命名"><i data-lucide="pencil"></i></button>
+                    <button class="item-btn" data-acc-action="edit" title="编辑"><i data-lucide="pencil"></i></button>
                     <button class="item-btn" data-acc-action="delete" title="删除账号"><i data-lucide="trash-2"></i></button>
                 </div>
             </div>
@@ -2327,11 +2715,13 @@ $('addAccountBtn').onclick = () => {
     const name = $('newAccountName').value.trim();
     const note = $('newAccountNote').value.trim();
     const larkAccount = $('newAccountLark').value.trim();
+    const group = $('newAccountGroup').value.trim() || '默认分组';
+    const activeInterval = Math.max(1, Math.min(30, parseInt($('newAccountInterval').value) || 2));
     if (!name) { showToast('请输入账号名称', 'warning'); $('newAccountName').focus(); return; }
     if (accounts.some(a => a.name === name)) { showToast('该账号名称已存在', 'warning'); return; }
     const newAcc = {
         id: 'acc_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-        name, note, larkAccount,
+        name, note, larkAccount, group, activeInterval,
         status: 'ok',
         createdAt: new Date().toISOString()
     };
@@ -2340,6 +2730,8 @@ $('addAccountBtn').onclick = () => {
     $('newAccountName').value = '';
     $('newAccountNote').value = '';
     $('newAccountLark').value = '';
+    $('newAccountGroup').value = '默认分组';
+    $('newAccountInterval').value = '2';
     renderAccountList();
     renderAccountFilter();
     renderStat();
@@ -2349,6 +2741,8 @@ $('addAccountBtn').onclick = () => {
 $('newAccountName').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
 $('newAccountNote').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
 $('newAccountLark').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
+$('newAccountGroup').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
+$('newAccountInterval').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
 
 /* ============================================================
    IMPORT / EXPORT
@@ -2374,9 +2768,33 @@ $('exportBtn').onclick = () => {
 
 $('importBtn').onclick = () => {
     $('importText').value = "";
+    renderVersionList();
     importModal.classList.remove('hide');
     document.body.classList.add('modal-lock');
 };
+function renderVersionList() {
+    const versions = getVersions();
+    const list = $('versionList');
+    if (!list) return;
+    if (versions.length === 0) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">暂无历史版本</div>';
+        return;
+    }
+    list.innerHTML = versions.map((v, i) => `
+        <div class="version-item">
+            <div class="version-info">
+                <div class="version-time">${new Date(v.time).toLocaleString('zh-CN')}</div>
+                <div class="version-meta">${v.accounts.length} 个账号 · ${v.groups.length} 个群组</div>
+            </div>
+            <div class="version-actions">
+                <button class="btn btn-sm btn-ghost" onclick="rollbackVersion(${i})">
+                    <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i>回滚
+                </button>
+            </div>
+        </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons({ nodes: [list] });
+}
 $('cancelImport').onclick = closeImport;
 $('importClose').onclick = closeImport;
 function closeImport() { importModal.classList.add('hide'); document.body.classList.remove('modal-lock'); }
@@ -2619,6 +3037,427 @@ $('resetDataBtn').onclick = () => {
 };
 
 /* ============================================================
+   OVERDUE REMINDER (活跃提醒系统)
+   ============================================================ */
+function getOverdueGroups() {
+    const now = Date.now();
+    return groupData.filter(item => {
+        if (item.status !== 'ok') return false;
+        const acc = accounts.find(a => a.id === item.accountId);
+        const intervalDays = acc ? (acc.activeInterval || 2) : 2;
+        if (!item.lastActiveTime) return true; // 从未活跃
+        const diffDays = (now - new Date(item.lastActiveTime).getTime()) / 86400000;
+        return diffDays >= intervalDays;
+    });
+}
+
+function renderReminderBanner() {
+    const overdue = getOverdueGroups();
+    const banner = $('reminderBanner');
+    if (overdue.length === 0) {
+        banner.classList.add('hide');
+        return;
+    }
+    banner.classList.remove('hide');
+    $('reminderTitle').textContent = `有 ${overdue.length} 个群组超期未活跃`;
+    const accNames = [...new Set(overdue.map(g => getAccountName(g.accountId)))].slice(0, 3).join('、');
+    $('reminderDesc').textContent = `涉及账号：${accNames}${overdue.length > 3 ? ' 等' : ''}，点击查看或直接开始活跃`;
+    if (window.lucide) lucide.createIcons({ nodes: [banner] });
+}
+
+function requestNotificationPermission() {
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
+
+function sendNotification(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%236366f1"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white">L</text></svg>' });
+    }
+}
+
+// 提醒横幅按钮
+$('reminderViewBtn').onclick = () => {
+    // 筛选出超期群组：通过搜索"超期"标记
+    const overdue = getOverdueGroups();
+    if (overdue.length > 0) {
+        // 临时用搜索框筛选第一个超期群组的账号
+        const firstAcc = overdue[0].accountId;
+        activeAccountId = firstAcc || '_unassigned';
+        renderAccountFilter();
+        renderList();
+        showToast(`已筛选超期群组所在账号，共 ${overdue.length} 个超期`, 'warning');
+    }
+};
+$('reminderStartBtn').onclick = () => { enterFocusMode('overdue'); };
+
+/* ============================================================
+   FOCUS MODE (批量活跃专注模式)
+   ============================================================ */
+const focusState = {
+    active: false,
+    list: [],
+    index: 0,
+    mode: 'all' // 'all' | 'overdue' | 'account'
+};
+
+function enterFocusMode(mode = 'all', accountId = null) {
+    focusState.mode = mode;
+    // 构建待活跃列表
+    let list = groupData.filter(g => g.status === 'ok');
+    if (mode === 'overdue') {
+        list = getOverdueGroups();
+    } else if (mode === 'account' && accountId) {
+        list = list.filter(g => g.accountId === accountId);
+    }
+    // 按最久未活跃排序
+    list.sort((a, b) => (a.lastActiveTime || "0").localeCompare(b.lastActiveTime || "0"));
+    if (list.length === 0) {
+        showToast('没有需要活跃的群组', 'info');
+        return;
+    }
+    focusState.list = list;
+    focusState.index = 0;
+    focusState.active = true;
+    $('focusMode').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    renderFocusCard();
+    requestNotificationPermission();
+}
+
+function exitFocusMode() {
+    focusState.active = false;
+    $('focusMode').classList.remove('active');
+    document.body.style.overflow = '';
+    renderStat();
+    renderList();
+    renderReminderBanner();
+}
+
+function renderFocusCard() {
+    const content = $('focusContent');
+    const total = focusState.list.length;
+    const done = focusState.index;
+    const progress = total > 0 ? (done / total * 100) : 0;
+    $('focusProgressFill').style.width = progress + '%';
+    $('focusProgressText').textContent = `已完成 ${done} / ${total}`;
+
+    if (focusState.index >= total) {
+        content.innerHTML = `
+            <div class="focus-empty">
+                <i data-lucide="check-circle-2"></i>
+                <h3>全部完成！</h3>
+                <p>本次活跃模式已完成 ${total} 个群组，干得漂亮！</p>
+                <button class="btn btn-primary" onclick="exitFocusMode()">
+                    <i data-lucide="check" class="icon"></i>完成
+                </button>
+            </div>
+        `;
+        if (window.lucide) lucide.createIcons({ nodes: [content] });
+        sendNotification('活跃完成', `已完成 ${total} 个群组的活跃任务`);
+        return;
+    }
+
+    const item = focusState.list[focusState.index];
+    const acc = accounts.find(a => a.id === item.accountId);
+    const accName = acc ? acc.name : "未分配";
+    const larkId = acc ? (acc.larkAccount || "") : "";
+    const overdue = isOverdue(item.lastActiveTime);
+
+    content.innerHTML = `
+        <div class="focus-card">
+            <div class="focus-account-badge">
+                <i data-lucide="user"></i>${escapeHtml(accName)}
+                ${overdue ? '<span style="color:var(--danger-500);">· 超期</span>' : ''}
+            </div>
+            <div class="focus-group-name">${escapeHtml(item.name)}</div>
+            ${item.descShort ? `<div class="focus-group-desc">${escapeHtml(item.descShort)}</div>` : ''}
+            ${item.desc ? `<div class="focus-group-desc" style="text-align:left;white-space:pre-line;font-size:var(--text-sm);">${escapeHtml(item.desc)}</div>` : ''}
+            ${larkId ? `<div class="focus-lark-hint"><i data-lucide="smartphone"></i>请确认 Lark 已登录：${escapeHtml(larkId)}</div>` : ''}
+            <div class="focus-actions">
+                <button class="btn btn-primary focus-btn-jump" id="focusJumpBtn">
+                    <i data-lucide="external-link"></i>打开群聊
+                </button>
+                <button class="btn focus-btn-skip" id="focusSkipBtn">
+                    <i data-lucide="skip-forward"></i>跳过
+                </button>
+            </div>
+            <div class="focus-nav">
+                <button class="btn btn-sm btn-ghost" id="focusPrevBtn" ${focusState.index === 0 ? 'disabled' : ''}>
+                    <i data-lucide="chevron-left"></i>上一个
+                </button>
+                <button class="btn btn-sm btn-ghost" id="focusMarkBtn">
+                    <i data-lucide="check-check"></i>仅标记活跃
+                </button>
+            </div>
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons({ nodes: [content] });
+
+    $('focusJumpBtn').onclick = () => {
+        // 跳转并标记活跃
+        if (larkId) {
+            showConfirm({
+                title: `确认跳转 — ${accName}`,
+                desc: `请确认当前 Lark 客户端已登录账号：${larkId}\n\n确认后将打开群聊「${item.name}」并标记为活跃`,
+                type: 'warning',
+                onConfirm: () => {
+                    window.open(item.link, '_blank');
+                    markFocusActive();
+                }
+            });
+        } else {
+            window.open(item.link, '_blank');
+            markFocusActive();
+        }
+    };
+    $('focusSkipBtn').onclick = () => { focusState.index++; renderFocusCard(); };
+    $('focusPrevBtn').onclick = () => { if (focusState.index > 0) { focusState.index--; renderFocusCard(); } };
+    $('focusMarkBtn').onclick = () => { markFocusActive(); };
+}
+
+function markFocusActive() {
+    const item = focusState.list[focusState.index];
+    const realIndex = groupData.indexOf(item);
+    if (realIndex >= 0) {
+        const now = new Date().toISOString();
+        groupData[realIndex].lastActiveTime = now;
+        if (!groupData[realIndex].activeHistory) groupData[realIndex].activeHistory = [];
+        groupData[realIndex].activeHistory.push(now);
+        saveData();
+    }
+    focusState.index++;
+    renderFocusCard();
+}
+
+$('focusModeBtn').onclick = () => enterFocusMode('all');
+$('focusExitBtn').onclick = exitFocusMode;
+
+/* ============================================================
+   DATA SAFETY (数据安全：自动备份 + 拖拽导入 + 版本快照)
+   ============================================================ */
+const VERSION_KEY = 'larkDataVersions';
+const MAX_VERSIONS = 5;
+
+function saveVersion() {
+    try {
+        const versions = JSON.parse(localStorage.getItem(VERSION_KEY) || '[]');
+        versions.unshift({
+            time: new Date().toISOString(),
+            accounts: JSON.parse(JSON.stringify(accounts)),
+            groups: JSON.parse(JSON.stringify(groupData))
+        });
+        if (versions.length > MAX_VERSIONS) versions.length = MAX_VERSIONS;
+        localStorage.setItem(VERSION_KEY, JSON.stringify(versions));
+    } catch(e) { console.warn('保存版本失败', e); }
+}
+
+function getVersions() {
+    try { return JSON.parse(localStorage.getItem(VERSION_KEY) || '[]'); }
+    catch(e) { return []; }
+}
+
+function rollbackVersion(index) {
+    const versions = getVersions();
+    if (!versions[index]) return;
+    showConfirm({
+        title: '回滚到历史版本',
+        desc: `将恢复到 ${new Date(versions[index].time).toLocaleString('zh-CN')} 的数据，当前数据将被覆盖。确定继续吗？`,
+        type: 'danger',
+        onConfirm: () => {
+            accounts = JSON.parse(JSON.stringify(versions[index].accounts));
+            groupData = JSON.parse(JSON.stringify(versions[index].groups));
+            saveAccounts();
+            saveData();
+            renderStat(); renderAccountFilter(); renderTagFilter(); renderList();
+            showToast('已回滚到历史版本', 'success');
+        }
+    });
+}
+
+// 自动备份开关
+let autoBackupEnabled = localStorage.getItem('autoBackup') === '1';
+function triggerAutoBackup() {
+    if (!autoBackupEnabled) return;
+    const exportData = { version: "2.0", exportTime: new Date().toISOString(), accounts, groups: groupData };
+    const json = JSON.stringify(exportData, null, 2);
+    const now = new Date().toISOString().slice(0,16).replace(/[:T]/g, "");
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `自动备份_${now}.json`; a.click();
+    URL.revokeObjectURL(url);
+}
+
+// 拖拽导入
+const dropOverlay = $('dropOverlay');
+let dragCounter = 0;
+document.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    dropOverlay.classList.add('active');
+});
+document.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); }
+});
+document.addEventListener('dragover', (e) => { e.preventDefault(); });
+document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragCounter = 0;
+    dropOverlay.classList.remove('active');
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.json')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            $('importText').value = ev.target.result;
+            $('importModal').classList.remove('hide');
+            document.body.classList.add('modal-lock');
+            showToast('已读取文件，请确认导入模式', 'info');
+        };
+        reader.readAsText(file);
+    } else {
+        showToast('请拖拽 JSON 备份文件', 'warning');
+    }
+});
+
+/* ============================================================
+   HEATMAP & RANKING (活跃可视化)
+   ============================================================ */
+function renderHeatmap() {
+    const grid = $('heatmapGrid');
+    if (!grid) return;
+    // 收集所有活跃日期
+    const activeDates = new Set();
+    const dateCount = {};
+    groupData.forEach(g => {
+        (g.activeHistory || []).forEach(t => {
+            const d = new Date(t).toISOString().slice(0, 10);
+            activeDates.add(d);
+            dateCount[d] = (dateCount[d] || 0) + 1;
+        });
+        if (g.lastActiveTime) {
+            const d = new Date(g.lastActiveTime).toISOString().slice(0, 10);
+            activeDates.add(d);
+            dateCount[d] = (dateCount[d] || 0) + 1;
+        }
+    });
+
+    // 生成最近12周（84天）的格子
+    const today = new Date();
+    const cells = [];
+    for (let i = 83; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0, 10);
+        const count = dateCount[dateStr] || 0;
+        let level = 0;
+        if (count > 0 && count <= 2) level = 1;
+        else if (count > 2 && count <= 5) level = 2;
+        else if (count > 5 && count <= 10) level = 3;
+        else if (count > 10) level = 4;
+        const isToday = i === 0;
+        cells.push(`<div class="heatmap-cell ${level > 0 ? 'level-' + level : ''} ${isToday ? 'today' : ''}" title="${dateStr}: ${count} 次活跃"></div>`);
+    }
+    grid.innerHTML = cells.join('');
+}
+
+function renderRanking() {
+    const list = $('rankingList');
+    if (!list) return;
+    // 近7天每个账号的活跃次数
+    const cutoff = Date.now() - 7 * 86400000;
+    const accCount = {};
+    groupData.forEach(g => {
+        const accId = g.accountId || '_unassigned';
+        const count = (g.activeHistory || []).filter(t => new Date(t).getTime() > cutoff).length;
+        accCount[accId] = (accCount[accId] || 0) + count;
+    });
+    const sorted = Object.entries(accCount).sort((a, b) => b[1] - a[1]);
+    const max = sorted.length > 0 ? sorted[0][1] : 1;
+
+    list.innerHTML = sorted.map(([accId, count], idx) => {
+        const name = accId === '_unassigned' ? '未分配' : getAccountName(accId);
+        const numClass = idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : '';
+        const pct = max > 0 ? (count / max * 100) : 0;
+        return `<div class="ranking-item">
+            <div class="ranking-num ${numClass}">${idx + 1}</div>
+            <div class="ranking-name">${escapeHtml(name)}</div>
+            <div class="ranking-bar-wrap"><div class="ranking-bar" style="width:${pct}%"></div></div>
+            <div class="ranking-count">${count} 次</div>
+        </div>`;
+    }).join('');
+}
+
+function toggleAnalytics() {
+    const wrap = $('analyticsWrap');
+    if (!wrap) return;
+    const visible = wrap.style.display !== 'none';
+    wrap.style.display = visible ? 'none' : 'block';
+    if (!visible) { renderHeatmap(); renderRanking(); }
+}
+
+/* ============================================================
+   ACCOUNT GROUP (账号分组)
+   ============================================================ */
+function getAccountGroups() {
+    const groups = [...new Set(accounts.map(a => a.group || '默认分组'))];
+    return groups;
+}
+
+// 重写 renderAccountFilter 支持分组
+function renderAccountFilter() {
+    const wrap = $('accountFilterWrap');
+    const unassignedCount = groupData.filter(g => !g.accountId).length;
+    const groups = getAccountGroups();
+
+    let html = `<span class="account-filter-label"><i data-lucide="users"></i>按账号筛选</span>`;
+    html += `<div class="account-chip ${activeAccountId === null ? 'active' : ''}" data-acc=""><i data-lucide="layout-grid"></i>全部账号<span class="account-chip-count">${groupData.length}</span></div>`;
+
+    groups.forEach(grp => {
+        const grpAccounts = accounts.filter(a => (a.group || '默认分组') === grp);
+        const grpCount = grpAccounts.reduce((sum, a) => sum + getAccountGroupsCount(a.id), 0);
+        html += `<div class="account-group-header" data-group="${escapeHtml(grp)}"><i data-lucide="chevron-down"></i>${escapeHtml(grp)} (${grpCount})</div>`;
+        html += `<div class="account-group-chips" data-group-chips="${escapeHtml(grp)}">`;
+        grpAccounts.forEach(acc => {
+            const count = getAccountGroupsCount(acc.id);
+            html += `<div class="account-chip ${activeAccountId === acc.id ? 'active' : ''}" data-acc="${acc.id}"><i data-lucide="user"></i>${escapeHtml(acc.name)}<span class="account-chip-count">${count}</span></div>`;
+        });
+        html += `</div>`;
+    });
+
+    if (unassignedCount > 0) {
+        html += `<div class="account-chip ${activeAccountId === '_unassigned' ? 'active' : ''}" data-acc="_unassigned"><i data-lucide="help-circle"></i>未分配<span class="account-chip-count">${unassignedCount}</span></div>`;
+    }
+    html += `<button class="account-manage-btn" id="openAccountMgrBtn"><i data-lucide="settings-2"></i>管理账号</button>`;
+    wrap.innerHTML = html;
+    if (window.lucide) lucide.createIcons({ nodes: [wrap] });
+
+    // 分组折叠
+    wrap.querySelectorAll('.account-group-header').forEach(header => {
+        header.onclick = () => {
+            const grp = header.dataset.group;
+            const chips = wrap.querySelector(`[data-group-chips="${grp}"]`);
+            header.classList.toggle('collapsed');
+            chips.classList.toggle('collapsed');
+        };
+    });
+
+    wrap.querySelectorAll('.account-chip').forEach(chip => {
+        chip.onclick = () => {
+            const accId = chip.dataset.acc;
+            activeAccountId = accId === '' ? null : accId;
+            renderAccountFilter();
+            renderList();
+        };
+    });
+    const mgrBtn = $('openAccountMgrBtn');
+    if (mgrBtn) mgrBtn.onclick = openAccountModal;
+}
+
+/* ============================================================
    INIT
    ============================================================ */
 function init() {
@@ -2626,10 +3465,18 @@ function init() {
     renderAccountFilter();
     renderTagFilter();
     renderList();
+    renderReminderBanner();
+    // 页面加载后检查超期并发送通知
+    setTimeout(() => {
+        const overdue = getOverdueGroups();
+        if (overdue.length > 0) {
+            requestNotificationPermission();
+            sendNotification('活跃提醒', `有 ${overdue.length} 个群组超期未活跃`);
+        }
+    }, 2000);
     if (window.lucide) {
         lucide.createIcons();
     } else {
-        // Lucide CDN 加载失败兜底
         document.querySelectorAll('[data-lucide]').forEach(el => {
             el.textContent = el.getAttribute('data-lucide');
         });
