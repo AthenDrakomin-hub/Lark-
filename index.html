@@ -969,7 +969,7 @@
         .confirm-icon.warning { background: var(--warn-50); color: var(--warn-500); }
         .confirm-icon .icon { width: 28px; height: 28px; }
         .confirm-title { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-2); }
-        .confirm-desc { font-size: var(--text-sm); color: var(--text-second); line-height: 1.6; }
+        .confirm-desc { font-size: var(--text-sm); color: var(--text-second); line-height: 1.6; white-space: pre-line; }
 
         /* ============================================================
            ONBOARDING (首次引导)
@@ -1291,6 +1291,11 @@
                 <label class="form-label">账号备注（选填）</label>
                 <input class="form-input" id="newAccountNote" placeholder="例如：手机号138xxxx、注册时间等">
             </div>
+            <div class="form-row">
+                <label class="form-label">Lark 账号标识（选填）</label>
+                <input class="form-input" id="newAccountLark" placeholder="例如：138xxxx 或 name@company.com，跳转时提示切换到此账号">
+                <div class="form-hint">填写后，点击「进入群聊」时会提示确认当前 Lark 客户端已登录此账号</div>
+            </div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2);">
                 <label class="form-label" style="margin-bottom:0;">已有账号（<span id="accountTotal">0</span>）</label>
             </div>
@@ -1477,8 +1482,8 @@
    DATA LAYER
    ============================================================ */
 const defaultAccounts = [
-    { id: "acc_001", name: "账号001", note: "示例账号", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" },
-    { id: "acc_002", name: "账号002", note: "示例账号", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" }
+    { id: "acc_001", name: "账号001", note: "示例账号", larkAccount: "", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" },
+    { id: "acc_002", name: "账号002", note: "示例账号", larkAccount: "", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" }
 ];
 
 const defaultData = [
@@ -1901,7 +1906,20 @@ function renderList(){
                 e.stopPropagation();
                 const action = btn.dataset.action;
                 if (action === 'jump') {
-                    window.open(item.link, '_blank');
+                    const acc = accounts.find(a => a.id === item.accountId);
+                    const accName = acc ? acc.name : "未分配账号";
+                    const larkId = acc ? (acc.larkAccount || "") : "";
+                    if (larkId) {
+                        // 有绑定 Lark 账号标识，弹出确认
+                        showConfirm({
+                            title: `确认跳转 — ${accName}`,
+                            desc: `请确认当前 Lark 客户端已登录账号：${larkId}\n\n确认后将打开群聊「${item.name}」`,
+                            type: 'warning',
+                            onConfirm: () => { window.open(item.link, '_blank'); }
+                        });
+                    } else {
+                        window.open(item.link, '_blank');
+                    }
                 } else if (action === 'copy') {
                     navigator.clipboard.writeText(item.link).then(() => {
                         showToast('链接已复制到剪贴板', 'success');
@@ -2214,6 +2232,7 @@ function openAccountModal(){
     renderAccountList();
     $('newAccountName').value = '';
     $('newAccountNote').value = '';
+    $('newAccountLark').value = '';
     $('accountModal').classList.remove('hide');
     document.body.classList.add('modal-lock');
     if (window.lucide) lucide.createIcons({ nodes: [$('accountModal')] });
@@ -2240,6 +2259,7 @@ function renderAccountList(){
                     <div class="account-row-name">${escapeHtml(acc.name)}</div>
                     <div class="account-row-meta">
                         <span><i data-lucide="layers" style="width:11px;height:11px;vertical-align:-1px;"></i> ${groupCount} 个群组</span>
+                        ${acc.larkAccount ? `<span><i data-lucide="smartphone" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.larkAccount)}</span>` : ''}
                         ${acc.note ? `<span><i data-lucide="file-text" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.note)}</span>` : ''}
                     </div>
                 </div>
@@ -2306,11 +2326,12 @@ $('accountModal').addEventListener('click', e => { if (e.target === $('accountMo
 $('addAccountBtn').onclick = () => {
     const name = $('newAccountName').value.trim();
     const note = $('newAccountNote').value.trim();
+    const larkAccount = $('newAccountLark').value.trim();
     if (!name) { showToast('请输入账号名称', 'warning'); $('newAccountName').focus(); return; }
     if (accounts.some(a => a.name === name)) { showToast('该账号名称已存在', 'warning'); return; }
     const newAcc = {
         id: 'acc_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-        name, note,
+        name, note, larkAccount,
         status: 'ok',
         createdAt: new Date().toISOString()
     };
@@ -2318,6 +2339,7 @@ $('addAccountBtn').onclick = () => {
     saveAccounts();
     $('newAccountName').value = '';
     $('newAccountNote').value = '';
+    $('newAccountLark').value = '';
     renderAccountList();
     renderAccountFilter();
     renderStat();
@@ -2326,6 +2348,7 @@ $('addAccountBtn').onclick = () => {
 };
 $('newAccountName').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
 $('newAccountNote').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
+$('newAccountLark').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
 
 /* ============================================================
    IMPORT / EXPORT
