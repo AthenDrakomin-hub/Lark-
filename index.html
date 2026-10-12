@@ -247,7 +247,7 @@
            ============================================================ */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: var(--space-3);
             margin-bottom: var(--space-5);
         }
@@ -334,6 +334,132 @@
             font-weight: 600;
         }
         .tag-filter:not(.active) .tag-count { background: var(--bg-subtle); color: var(--text-muted); }
+
+        /* ============================================================
+           ACCOUNT FILTER (多账号筛选)
+           ============================================================ */
+        .account-filter-wrap {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+            margin-bottom: var(--space-3);
+            align-items: center;
+            padding: var(--space-3) var(--space-4);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+        .account-filter-label {
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .account-filter-label .icon { width: 14px; height: 14px; }
+        .account-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            background: var(--bg-subtle);
+            cursor: pointer;
+            font-size: var(--text-sm);
+            color: var(--text-second);
+            transition: all var(--transition-fast);
+            user-select: none;
+        }
+        .account-chip:hover { border-color: var(--primary); color: var(--primary); }
+        .account-chip.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+        .account-chip .icon { width: 13px; height: 13px; }
+        .account-chip-count {
+            font-size: var(--text-xs);
+            background: rgba(255,255,255,0.6);
+            padding: 0 6px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .account-chip.active .account-chip-count { background: rgba(255,255,255,0.4); color: var(--primary); }
+        .account-manage-btn {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            border: 1px dashed var(--border-strong);
+            background: transparent;
+            cursor: pointer;
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .account-manage-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+        .account-manage-btn .icon { width: 13px; height: 13px; }
+
+        /* 群组卡片上的账号徽章 */
+        .account-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: var(--text-xs);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+        }
+        .account-badge .icon { width: 11px; height: 11px; }
+        .account-badge.unassigned { background: var(--bg-subtle); color: var(--text-muted); }
+
+        /* 账号管理弹窗 */
+        .account-list { margin-bottom: var(--space-4); }
+        .account-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-2);
+            background: var(--bg-subtle);
+            transition: all var(--transition-fast);
+        }
+        .account-row:hover { border-color: var(--border-strong); }
+        .account-row-icon {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .account-row-icon .icon { width: 18px; height: 18px; }
+        .account-row-info { flex: 1; min-width: 0; }
+        .account-row-name { font-weight: 600; font-size: var(--text-sm); }
+        .account-row-meta { font-size: var(--text-xs); color: var(--text-muted); display: flex; gap: var(--space-3); margin-top: 2px; }
+        .account-row-actions { display: flex; gap: var(--space-1); flex-shrink: 0; }
+        .account-empty {
+            text-align: center;
+            padding: var(--space-8) var(--space-4);
+            color: var(--text-muted);
+            font-size: var(--text-sm);
+        }
+        .account-empty .icon { width: 32px; height: 32px; margin-bottom: var(--space-2); opacity: 0.5; }
 
         /* ============================================================
            SEARCH ROW
@@ -958,6 +1084,10 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn" id="accountMgrBtn" title="账号管理">
+                <i data-lucide="users" class="icon"></i>
+                <span class="btn-label">账号管理</span>
+            </button>
             <button class="btn btn-primary" id="openConfigBtn">
                 <i data-lucide="plus" class="icon"></i>
                 <span class="btn-label">添加群组</span>
@@ -1000,6 +1130,9 @@
             <button class="btn btn-sm btn-ghost" id="batchCancel">取消</button>
         </div>
     </div>
+
+    <!-- ACCOUNT FILTER (多账号筛选) -->
+    <div class="account-filter-wrap" id="accountFilterWrap"></div>
 
     <!-- TAG FILTER -->
     <div class="tag-filter-wrap" id="tagFilterWrap"></div>
@@ -1071,8 +1204,15 @@
             <input type="hidden" id="editIndex">
             <div class="form-row">
                 <label class="form-label">名称<span class="required">*</span></label>
-                <input class="form-input" id="inpName" placeholder="例如：账号001 | 闲聊大群A">
-                <div class="form-hint">建议格式：账号编号 | 群名称，方便快速识别</div>
+                <input class="form-input" id="inpName" placeholder="例如：闲聊大群A">
+                <div class="form-hint">群组名称，账号已在上方选择，无需重复填写</div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">所属账号<span class="required">*</span></label>
+                <select class="form-select" id="inpAccount">
+                    <option value="">-- 请选择账号 --</option>
+                </select>
+                <div class="form-hint">该群组属于哪个 Lark 账号，可在「账号管理」中新增</div>
             </div>
             <div class="form-row inline">
                 <div>
@@ -1126,6 +1266,38 @@
             <button class="btn btn-primary" id="saveConfig">
                 <i data-lucide="check" class="icon"></i>保存
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- 账号管理弹窗 -->
+<div class="modal hide" id="accountModal">
+    <div class="modal-box" style="max-width:520px;">
+        <div class="modal-header">
+            <h3>账号管理</h3>
+            <button class="modal-close" id="accountClose"><i data-lucide="x"></i></button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row" style="display:flex;gap:var(--space-2);align-items:flex-end;">
+                <div style="flex:1;">
+                    <label class="form-label">新增账号名称</label>
+                    <input class="form-input" id="newAccountName" placeholder="例如：账号001、运营号A、客服号B">
+                </div>
+                <button class="btn btn-primary" id="addAccountBtn" style="height:42px;flex-shrink:0;">
+                    <i data-lucide="plus" class="icon"></i>添加
+                </button>
+            </div>
+            <div class="form-row">
+                <label class="form-label">账号备注（选填）</label>
+                <input class="form-input" id="newAccountNote" placeholder="例如：手机号138xxxx、注册时间等">
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2);">
+                <label class="form-label" style="margin-bottom:0;">已有账号（<span id="accountTotal">0</span>）</label>
+            </div>
+            <div class="account-list" id="accountList"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" id="accountDone">完成</button>
         </div>
     </div>
 </div>
@@ -1304,9 +1476,15 @@
 /* ============================================================
    DATA LAYER
    ============================================================ */
+const defaultAccounts = [
+    { id: "acc_001", name: "账号001", note: "示例账号", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" },
+    { id: "acc_002", name: "账号002", note: "示例账号", status: "ok", createdAt: "2026-01-01T00:00:00.000Z" }
+];
+
 const defaultData = [
     {
-        name:"账号001 | 闲聊大群A",
+        accountId: "acc_001",
+        name:"闲聊大群A",
         descShort:"早中晚定时活跃",
         desc:"活跃时段：9点、14点、20点\n互动：日常闲聊，每次发言间隔随机\n注意：不要短时间连续发言",
         tags:[
@@ -1319,7 +1497,8 @@ const defaultData = [
         lastActiveTime:""
     },
     {
-        name:"账号002 | 闲聊大群A",
+        accountId: "acc_002",
+        name:"闲聊大群A",
         descShort:"晚间时段活跃",
         desc:"活跃时段：19点~23点\n互动：跟帖回复，不连续刷屏",
         tags:[
@@ -1332,10 +1511,12 @@ const defaultData = [
     }
 ];
 
+let accounts = JSON.parse(localStorage.getItem('larkAccounts')) || defaultAccounts;
 let groupData = JSON.parse(localStorage.getItem('groupActiveData')) || defaultData;
 let activeTags = new Set();
 let selectedIndexes = new Set();
 let activeStatusFilter = null; // null = 全部, 'ok'/'wait'/'invalid'/'today'
+let activeAccountId = null; // null = 全部账号
 
 /* ============================================================
    DOM REFS
@@ -1356,13 +1537,36 @@ const toastContainer = $('toastContainer');
    DATA MIGRATION (兼容旧数据)
    ============================================================ */
 function migrateData(list){
-    return list.map(item => ({
-        status: item.status || "ok",
-        lastActiveTime: item.lastActiveTime || "",
-        tags: Array.isArray(item.tags) ? item.tags : [],
-        isTop: !!item.isTop,
-        ...item
-    }));
+    return list.map(item => {
+        // 旧数据兼容：从名称 "账号001 | 群名" 中提取账号名，尝试匹配已有账号
+        let accountId = item.accountId || "";
+        if (!accountId && item.name && item.name.includes("|")) {
+            const accName = item.name.split("|")[0].trim();
+            const matched = accounts.find(a => a.name === accName);
+            if (matched) accountId = matched.id;
+        }
+        return {
+            status: item.status || "ok",
+            lastActiveTime: item.lastActiveTime || "",
+            tags: Array.isArray(item.tags) ? item.tags : [],
+            isTop: !!item.isTop,
+            accountId,
+            ...item,
+            accountId
+        };
+    });
+}
+function saveAccounts(){
+    try { localStorage.setItem('larkAccounts', JSON.stringify(accounts)); }
+    catch(e){ showToast('账号数据保存失败', 'error'); }
+}
+function getAccountName(accountId){
+    if (!accountId) return "未分配账号";
+    const acc = accounts.find(a => a.id === accountId);
+    return acc ? acc.name : "未知账号";
+}
+function getAccountGroupsCount(accountId){
+    return groupData.filter(g => g.accountId === accountId).length;
 }
 groupData = migrateData(groupData);
 
@@ -1455,8 +1659,10 @@ function renderStat(){
     const invalid = groupData.filter(x => x.status === 'invalid').length;
     const today = new Date().toISOString().slice(0,10);
     const activeToday = groupData.filter(x => x.lastActiveTime && x.lastActiveTime.startsWith(today)).length;
+    const accountCount = new Set(groupData.filter(g => g.accountId).map(g => g.accountId)).size;
 
     const cards = [
+        { key: 'accounts', label: '管控账号', num: accountCount, icon: 'users', filter: '_accounts' },
         { key: 'total',   label: '总群组',   num: total,   icon: 'layers',        filter: null },
         { key: 'ok',      label: '正常',     num: ok,      icon: 'check-circle',  filter: 'ok' },
         { key: 'wait',    label: '待核验',   num: wait,    icon: 'clock',         filter: 'wait' },
@@ -1479,11 +1685,59 @@ function renderStat(){
     statGrid.querySelectorAll('.stat-card').forEach(card => {
         card.onclick = () => {
             const f = card.dataset.filter;
+            if (f === '_accounts') {
+                // 点击管控账号卡片打开账号管理
+                openAccountModal();
+                return;
+            }
             activeStatusFilter = (activeStatusFilter === (f === 'null' ? null : f)) ? null : (f === 'null' ? null : f);
             renderStat();
             renderList();
         };
     });
+}
+
+/* ============================================================
+   ACCOUNT FILTER (多账号筛选)
+   ============================================================ */
+function renderAccountFilter(){
+    const wrap = $('accountFilterWrap');
+    const unassignedCount = groupData.filter(g => !g.accountId).length;
+    let html = `
+        <span class="account-filter-label"><i data-lucide="users"></i>按账号筛选</span>
+        <div class="account-chip ${activeAccountId === null ? 'active' : ''}" data-acc="">
+            <i data-lucide="layout-grid"></i>全部账号<span class="account-chip-count">${groupData.length}</span>
+        </div>
+    `;
+    accounts.forEach(acc => {
+        const count = getAccountGroupsCount(acc.id);
+        html += `
+            <div class="account-chip ${activeAccountId === acc.id ? 'active' : ''}" data-acc="${acc.id}">
+                <i data-lucide="user"></i>${escapeHtml(acc.name)}<span class="account-chip-count">${count}</span>
+            </div>
+        `;
+    });
+    if (unassignedCount > 0) {
+        html += `
+            <div class="account-chip ${activeAccountId === '_unassigned' ? 'active' : ''}" data-acc="_unassigned">
+                <i data-lucide="help-circle"></i>未分配<span class="account-chip-count">${unassignedCount}</span>
+            </div>
+        `;
+    }
+    html += `<button class="account-manage-btn" id="openAccountMgrBtn"><i data-lucide="settings-2"></i>管理账号</button>`;
+    wrap.innerHTML = html;
+    if (window.lucide) lucide.createIcons({ nodes: [wrap] });
+
+    wrap.querySelectorAll('.account-chip').forEach(chip => {
+        chip.onclick = () => {
+            const accId = chip.dataset.acc;
+            activeAccountId = accId === '' ? null : accId;
+            renderAccountFilter();
+            renderList();
+        };
+    });
+    const mgrBtn = $('openAccountMgrBtn');
+    if (mgrBtn) mgrBtn.onclick = openAccountModal;
 }
 
 /* ============================================================
@@ -1527,9 +1781,13 @@ function renderList(){
 
     const kw = searchInput.value.trim().toLowerCase();
     let filterList = groupData.filter(item => {
-        const textSource = `${item.name} ${item.descShort} ${item.desc} ${item.tags.map(t=>t.label).join(" ")} ${item.status}`.toLowerCase();
+        const textSource = `${item.name} ${item.descShort} ${item.desc} ${item.tags.map(t=>t.label).join(" ")} ${item.status} ${getAccountName(item.accountId)}`.toLowerCase();
         const matchSearch = !kw || textSource.includes(kw);
         const matchTag = activeTags.size === 0 || item.tags.some(t => activeTags.has(t.label));
+        // 账号筛选
+        let matchAccount = true;
+        if (activeAccountId === '_unassigned') matchAccount = !item.accountId;
+        else if (activeAccountId) matchAccount = item.accountId === activeAccountId;
         let matchStatus = true;
         if (activeStatusFilter === 'ok') matchStatus = item.status === 'ok';
         else if (activeStatusFilter === 'wait') matchStatus = item.status === 'wait';
@@ -1538,7 +1796,7 @@ function renderList(){
             const today = new Date().toISOString().slice(0,10);
             matchStatus = item.lastActiveTime && item.lastActiveTime.startsWith(today);
         }
-        return matchSearch && matchTag && matchStatus;
+        return matchSearch && matchTag && matchAccount && matchStatus;
     });
 
     const sortType = $('sortSelect').value;
@@ -1605,6 +1863,9 @@ function renderList(){
                 <span class="status-badge ${item.status}">
                     <i data-lucide="${statusIcons[item.status]}"></i>${statusLabels[item.status]}
                 </span>
+            </div>
+            <div class="account-badge ${item.accountId ? '' : 'unassigned'}">
+                <i data-lucide="user"></i>${escapeHtml(getAccountName(item.accountId))}
             </div>
             <div class="tag-wrap">${tagHtml}</div>
             ${item.descShort ? `<div class="desc-short">${escapeHtml(item.descShort)}</div>` : ''}
@@ -1737,10 +1998,15 @@ const presetColors = [
 
 function openEditModal(index = null){
     $('tagEditWrap').innerHTML = '';
+    // 填充账号下拉
+    const accSelect = $('inpAccount');
+    accSelect.innerHTML = '<option value="">-- 请选择账号 --</option>' +
+        accounts.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
     if (index === null) {
         $('modalTitle').textContent = "新增账号群组";
         $('editIndex').value = "";
         $('inpName').value = "";
+        $('inpAccount').value = activeAccountId && activeAccountId !== '_unassigned' ? activeAccountId : "";
         $('inpDescShort').value = "";
         $('inpDesc').value = "";
         $('inpLink').value = "";
@@ -1752,6 +2018,7 @@ function openEditModal(index = null){
         $('editIndex').value = index;
         const item = groupData[index];
         $('inpName').value = item.name;
+        $('inpAccount').value = item.accountId || "";
         $('inpDescShort').value = item.descShort || "";
         $('inpDesc').value = item.desc || "";
         $('inpLink').value = item.link;
@@ -1761,7 +2028,7 @@ function openEditModal(index = null){
         item.tags.forEach(t => addTagEditRow(t.label, t.colorBg, t.colorText));
     }
     $('linkHint').className = 'form-hint';
-    $('linkHint').textContent = '必须使用 chat/open 格式链接，入群邀请链接无法直接打开群聊';
+    $('linkHint').textContent = '支持粘贴群ID（oc_开头）、群分享链接，或完整 chat/open 链接';
     configModal.classList.remove('hide');
     document.body.classList.add('modal-lock');
     if (window.lucide) lucide.createIcons({ nodes: [configModal] });
@@ -1877,9 +2144,11 @@ $('linkHelpGotIt').onclick = () => {
 $('saveConfig').onclick = () => {
     const idxVal = $('editIndex').value;
     const name = $('inpName').value.trim();
+    const accountId = $('inpAccount').value;
     const rawLink = $('inpLink').value.trim();
     const link = normalizeLink(rawLink);
 
+    if (!accountId) { showToast('请选择所属账号', 'warning'); $('inpAccount').focus(); return; }
     if (!name) { showToast('请输入群组名称', 'warning'); $('inpName').focus(); return; }
     if (!rawLink) { showToast('请输入跳转链接或群ID', 'warning'); $('inpLink').focus(); return; }
     if (!is_valid_chat_link(link)) {
@@ -1897,7 +2166,8 @@ $('saveConfig').onclick = () => {
     });
 
     const payload = {
-        name, descShort: $('inpDescShort').value.trim(), desc: $('inpDesc').value.trim(),
+        accountId, name,
+        descShort: $('inpDescShort').value.trim(), desc: $('inpDesc').value.trim(),
         link, isTop: $('inpTop').value === "true", status: $('inpStatus').value,
         lastActiveTime: idxVal ? groupData[Number(idxVal)].lastActiveTime : "", tags
     };
@@ -1908,7 +2178,7 @@ $('saveConfig').onclick = () => {
     saveData();
     configModal.classList.add('hide');
     document.body.classList.remove('modal-lock');
-    renderStat(); renderTagFilter(); renderList();
+    renderStat(); renderAccountFilter(); renderTagFilter(); renderList();
 };
 
 $('delItemBtn').onclick = () => {
@@ -1938,10 +2208,136 @@ $('openConfigBtn').onclick = () => openEditModal(null);
 $('emptyAddBtn').onclick = () => openEditModal(null);
 
 /* ============================================================
+   ACCOUNT MANAGEMENT (账号管理 CRUD)
+   ============================================================ */
+function openAccountModal(){
+    renderAccountList();
+    $('newAccountName').value = '';
+    $('newAccountNote').value = '';
+    $('accountModal').classList.remove('hide');
+    document.body.classList.add('modal-lock');
+    if (window.lucide) lucide.createIcons({ nodes: [$('accountModal')] });
+    setTimeout(() => $('newAccountName').focus(), 100);
+}
+function closeAccountModal(){
+    $('accountModal').classList.add('hide');
+    document.body.classList.remove('modal-lock');
+}
+function renderAccountList(){
+    const list = $('accountList');
+    $('accountTotal').textContent = accounts.length;
+    if (accounts.length === 0) {
+        list.innerHTML = `<div class="account-empty"><i data-lucide="users"></i><div>还没有添加账号</div><div style="font-size:12px;margin-top:4px;">在上方输入账号名称后点击「添加」</div></div>`;
+        if (window.lucide) lucide.createIcons({ nodes: [list] });
+        return;
+    }
+    list.innerHTML = accounts.map(acc => {
+        const groupCount = getAccountGroupsCount(acc.id);
+        return `
+            <div class="account-row" data-acc-id="${acc.id}">
+                <div class="account-row-icon"><i data-lucide="user"></i></div>
+                <div class="account-row-info">
+                    <div class="account-row-name">${escapeHtml(acc.name)}</div>
+                    <div class="account-row-meta">
+                        <span><i data-lucide="layers" style="width:11px;height:11px;vertical-align:-1px;"></i> ${groupCount} 个群组</span>
+                        ${acc.note ? `<span><i data-lucide="file-text" style="width:11px;height:11px;vertical-align:-1px;"></i> ${escapeHtml(acc.note)}</span>` : ''}
+                    </div>
+                </div>
+                <div class="account-row-actions">
+                    <button class="item-btn" data-acc-action="edit" title="重命名"><i data-lucide="pencil"></i></button>
+                    <button class="item-btn" data-acc-action="delete" title="删除账号"><i data-lucide="trash-2"></i></button>
+                </div>
+            </div>
+        `;
+    }).join('');
+    if (window.lucide) lucide.createIcons({ nodes: [list] });
+
+    list.querySelectorAll('[data-acc-action]').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const row = btn.closest('.account-row');
+            const accId = row.dataset.accId;
+            const action = btn.dataset.accAction;
+            const acc = accounts.find(a => a.id === accId);
+            if (!acc) return;
+
+            if (action === 'edit') {
+                const newName = prompt('修改账号名称：', acc.name);
+                if (newName && newName.trim()) {
+                    acc.name = newName.trim();
+                    saveAccounts();
+                    renderAccountList();
+                    renderAccountFilter();
+                    renderList();
+                    showToast('账号已重命名', 'success');
+                }
+            } else if (action === 'delete') {
+                const groupCount = getAccountGroupsCount(accId);
+                const msg = groupCount > 0
+                    ? `账号「${acc.name}」下有 ${groupCount} 个群组，删除后这些群组将变为「未分配账号」。确定删除吗？`
+                    : `确定删除账号「${acc.name}」吗？`;
+                showConfirm({
+                    title: '删除账号',
+                    desc: msg,
+                    type: 'danger',
+                    onConfirm: () => {
+                        // 将该账号下的群组变为未分配
+                        groupData.forEach(g => { if (g.accountId === accId) g.accountId = ''; });
+                        accounts = accounts.filter(a => a.id !== accId);
+                        saveAccounts();
+                        saveData();
+                        if (activeAccountId === accId) activeAccountId = null;
+                        renderAccountList();
+                        renderAccountFilter();
+                        renderStat();
+                        renderList();
+                        showToast('账号已删除', 'success');
+                    }
+                });
+            }
+        };
+    });
+}
+$('accountMgrBtn').onclick = openAccountModal;
+$('accountClose').onclick = closeAccountModal;
+$('accountDone').onclick = closeAccountModal;
+$('accountModal').addEventListener('click', e => { if (e.target === $('accountModal')) closeAccountModal(); });
+
+$('addAccountBtn').onclick = () => {
+    const name = $('newAccountName').value.trim();
+    const note = $('newAccountNote').value.trim();
+    if (!name) { showToast('请输入账号名称', 'warning'); $('newAccountName').focus(); return; }
+    if (accounts.some(a => a.name === name)) { showToast('该账号名称已存在', 'warning'); return; }
+    const newAcc = {
+        id: 'acc_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+        name, note,
+        status: 'ok',
+        createdAt: new Date().toISOString()
+    };
+    accounts.push(newAcc);
+    saveAccounts();
+    $('newAccountName').value = '';
+    $('newAccountNote').value = '';
+    renderAccountList();
+    renderAccountFilter();
+    renderStat();
+    showToast(`账号「${name}」已添加`, 'success');
+    $('newAccountName').focus();
+};
+$('newAccountName').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
+$('newAccountNote').addEventListener('keydown', e => { if (e.key === 'Enter') $('addAccountBtn').click(); });
+
+/* ============================================================
    IMPORT / EXPORT
    ============================================================ */
 $('exportBtn').onclick = () => {
-    const json = JSON.stringify(groupData, null, 2);
+    const exportData = {
+        version: "2.0",
+        exportTime: new Date().toISOString(),
+        accounts: accounts,
+        groups: groupData
+    };
+    const json = JSON.stringify(exportData, null, 2);
     const now = new Date().toISOString().slice(0,16).replace(/[:T]/g, "");
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -1950,7 +2346,7 @@ $('exportBtn').onclick = () => {
     a.download = `群活跃配置备份_${now}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('配置已导出为 JSON 文件', 'success');
+    showToast('配置已导出（含账号数据）', 'success');
 };
 
 $('importBtn').onclick = () => {
@@ -1967,8 +2363,37 @@ $('doImport').onclick = () => {
     try {
         const raw = $('importText').value.trim();
         if (!raw) { showToast('请粘贴 JSON 数据', 'warning'); return; }
-        const arr = JSON.parse(raw);
-        if (!Array.isArray(arr)) throw new Error("不是数组格式");
+        const parsed = JSON.parse(raw);
+
+        // 支持两种格式：新格式 {accounts, groups} 和旧格式 纯数组
+        let importAccounts = null;
+        let arr = null;
+        if (Array.isArray(parsed)) {
+            arr = parsed; // 旧格式
+        } else if (parsed.groups && Array.isArray(parsed.groups)) {
+            arr = parsed.groups;
+            if (parsed.accounts && Array.isArray(parsed.accounts)) {
+                importAccounts = parsed.accounts;
+            }
+        } else {
+            throw new Error("无法识别的数据格式");
+        }
+
+        // 导入账号
+        if (importAccounts && importAccounts.length > 0) {
+            const mode = $('importMode').value;
+            if (mode === 'replace') {
+                accounts = importAccounts;
+            } else {
+                // 追加：合并去重（按 name 去重）
+                importAccounts.forEach(impAcc => {
+                    if (!accounts.some(a => a.name === impAcc.name)) {
+                        accounts.push(impAcc);
+                    }
+                });
+            }
+            saveAccounts();
+        }
 
         // 字段校验
         let validCount = 0;
@@ -1981,6 +2406,7 @@ $('doImport').onclick = () => {
             lastActiveTime: item.lastActiveTime || "",
             tags: Array.isArray(item.tags) ? item.tags : [],
             isTop: !!item.isTop,
+            accountId: item.accountId || "",
             name: item.name, descShort: item.descShort || "", desc: item.desc || "", link: item.link
         }));
 
@@ -1992,8 +2418,9 @@ $('doImport').onclick = () => {
 
         saveData();
         closeImport();
-        renderStat(); renderTagFilter(); renderList();
-        showToast(`成功导入 ${migrated.length} 条配置${arr.length > migrated.length ? `，跳过 ${arr.length - migrated.length} 条无效数据` : ''}`, 'success');
+        renderStat(); renderAccountFilter(); renderTagFilter(); renderList();
+        const accMsg = importAccounts ? `（含 ${importAccounts.length} 个账号）` : '';
+        showToast(`成功导入 ${migrated.length} 条群组配置${accMsg}${arr.length > migrated.length ? `，跳过 ${arr.length - migrated.length} 条无效数据` : ''}`, 'success');
     } catch(e) {
         showToast('JSON 解析失败：' + e.message, 'error');
     }
@@ -2032,6 +2459,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (e.key === 'Escape') {
         if (!configModal.classList.contains('hide')) closeConfig();
+        else if (!$('accountModal').classList.contains('hide')) closeAccountModal();
         else if (!importModal.classList.contains('hide')) closeImport();
         else if (!$('confirmModal').classList.contains('hide')) closeConfirm();
         else if (!$('onboardingModal').classList.contains('hide')) closeOnboarding();
@@ -2150,14 +2578,18 @@ $('resetOnboarding').onclick = () => { closeHelp(); localStorage.removeItem('onb
 $('resetDataBtn').onclick = () => {
     showConfirm({
         title: '重置全部数据',
-        desc: '此操作将清空所有群组配置并恢复为示例数据，不可恢复。建议先导出备份。',
+        desc: '此操作将清空所有账号和群组配置并恢复为示例数据，不可恢复。建议先导出备份。',
         type: 'danger',
         onConfirm: () => {
             localStorage.removeItem('groupActiveData');
+            localStorage.removeItem('larkAccounts');
+            accounts = JSON.parse(JSON.stringify(defaultAccounts));
             groupData = migrateData(defaultData);
+            saveAccounts();
             saveData();
+            activeAccountId = null;
             closeHelp();
-            renderStat(); renderTagFilter(); renderList();
+            renderStat(); renderAccountFilter(); renderTagFilter(); renderList();
             showToast('数据已重置为示例数据', 'success');
         }
     });
@@ -2168,6 +2600,7 @@ $('resetDataBtn').onclick = () => {
    ============================================================ */
 function init() {
     renderStat();
+    renderAccountFilter();
     renderTagFilter();
     renderList();
     if (window.lucide) {
